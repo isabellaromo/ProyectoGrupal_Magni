@@ -1,0 +1,26 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik+Burned&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+:root {
+  --fontTitle: "Rubik Burned", system-ui;
+  --fontText: "Mulish";
+  --grisOscuro: "333333";
+  --amarillo: "E2AA11";
+  --grisClaro: "DDDDDD";
+  --marron: "300000";
+}
+h2 {
+  font-family: var(--fontTitle);
+}
+p {
+  font-family: "Calibri";
+}
+.titulo-seccion {
+  font-family: "Poppins";
+  font-weight: 700;
+  font-size: 30px;
+  text-align: left;
+  padding: 20px;
+  color: #E2AA11;
+  border-bottom: 2px solid #E2AA11;
+}
