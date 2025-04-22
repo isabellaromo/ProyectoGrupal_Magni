@@ -1,3 +1,4 @@
+import { IoPencil, IoTrash } from 'react-icons/io5'
 import { Instrumento } from '../types/Instrumento'
 
 export default function ItemInstrumentstable({
@@ -25,7 +26,14 @@ export default function ItemInstrumentstable({
         <p className="max-h-12 overflow-hidden">{instrument.descripcion}</p>
         <span className="text-lg">...</span>
       </td>
-      <td className="px-4 rounded-r-md text-center mr-4"></td>
+      <td className="px-4 rounded-r-md text-center mr-4">
+        <button>
+          <IoPencil className="size-6" />
+        </button>
+        <button>
+          <IoTrash className="size-6" />
+        </button>
+      </td>
     </tr>
   )
 }
