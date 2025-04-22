@@ -46,8 +46,8 @@ const InstrumentsTable = () => {
       </thead>
       <tbody>
         <tr className="h-[13px]"></tr>
-        {data.map(instrument => {
-          return <ItemInstrumentstable instrument={instrument} />
+        {data.map((instrument, index) => {
+          return <ItemInstrumentstable key={index} instrument={instrument} />
         })}
         {loading && (
           <tr>

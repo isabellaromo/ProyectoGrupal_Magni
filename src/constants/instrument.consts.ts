@@ -52,6 +52,6 @@ export const formFields = [
     label: 'Descripción',
     name: 'descripcion',
     placeholder: 'Madera de alta calidad y sonido excepcional',
-    type: 'textArea',
+    type: 'text',
   },
 ]

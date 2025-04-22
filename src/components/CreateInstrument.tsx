@@ -1,10 +1,11 @@
-import { ChangeEvent, FormEvent, useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import ItemForm from '../common/ItemForm'
 import { Instrumento } from '../types/Instrumento'
 import {
   createInstrumentInitialValues,
   formFields,
 } from '../constants/instrument.consts'
+import fetchHelper from '../helpers/fetchHelper'
 
 export default function CreateInstrument() {
   const [values, setValues] = useState<Instrumento>(
@@ -18,9 +19,17 @@ export default function CreateInstrument() {
     })
   }
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.info(values)
+    console.log('VALORES: ', values)
+    const response = await fetchHelper().post(
+      'http://localhost:8080/instrumentos',
+      {
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values),
+      }
+    )
+    console.log('RESPUEST: ', response)
   }
 
   return (
