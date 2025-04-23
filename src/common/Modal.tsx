@@ -1,21 +1,12 @@
-import { MouseEvent, ReactNode, useEffect, useRef } from 'react'
+import { MouseEvent, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { useModalContext } from '../contexts/ModalContext'
 import { IoClose } from 'react-icons/io5'
 
-interface Props {
-  children: ReactNode
-}
-
-const eventListener = 'keydown'
-const Modal = ({ children }: Props) => {
-  const { state, setState } = useModalContext()
+const Modal = () => {
+  const { isOpen, content, closeModal } = useModalContext()
   const modalRef = useRef<HTMLDivElement>(null)
   const modalRoot = document.getElementById('modal')
-
-  const closeModal = () => {
-    setState(false)
-  }
 
   const handleContentClick = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
@@ -27,26 +18,24 @@ const Modal = ({ children }: Props) => {
         closeModal()
       }
     }
-    if (state) {
-      document.addEventListener(eventListener, handleEsc)
+    if (isOpen) {
+      document.addEventListener('keydown', handleEsc)
     }
     return () => {
-      document.removeEventListener(eventListener, handleEsc)
+      document.removeEventListener('keydown', handleEsc)
     }
-  }, [setState, state])
+  }, [isOpen, closeModal])
 
-  if (!state || !modalRoot) {
-    return null
-  }
+  if (!isOpen || !modalRoot) return null
 
   return createPortal(
     <div
       onClick={closeModal}
-      className="fixed inset-0 bg-black/50 flex items-center justify-center"
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
     >
       <div
         ref={modalRef}
-        className="relative bg-white rounded-lg pt-8 px-8 pb-2 shadow-lg max-h-[100vh] overflow-y-auto"
+        className="relative bg-white rounded-lg pt-8 px-8 pb-2 shadow-lg max-h-[100vh] overflow-y-auto max-w-[600px]"
         onClick={handleContentClick}
       >
         <button
@@ -55,7 +44,7 @@ const Modal = ({ children }: Props) => {
         >
           <IoClose className="size-6" />
         </button>
-        {children}
+        {content}
       </div>
     </div>,
     modalRoot

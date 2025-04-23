@@ -1,19 +1,16 @@
 import { ChangeEvent, useState } from 'react'
-import { Instrumento } from '../types/Instrumento'
-import {
-  createInstrumentInitialValues,
-  formFields,
-} from '../constants/instrument.consts'
-import fetchHelper from '../helpers/fetchHelper'
-import { useModalContext } from '../contexts/ModalContext'
 import Form from '../common/Form'
+import { Instrumento } from '../types/Instrumento'
+import { useModalContext } from '../contexts/ModalContext'
+import fetchHelper from '../helpers/fetchHelper'
+import { createFormFields } from '../utils/createFormFields'
 import { validateValues } from '../utils/validateValues'
 
-export default function CreateInstrument() {
+const EditInstrument = ({ instrument }: { instrument: Instrumento }) => {
   const { closeModal } = useModalContext()
-  const [values, setValues] = useState<Instrumento>(
-    createInstrumentInitialValues
-  )
+  const [values, setValues] = useState<Instrumento>({
+    ...instrument,
+  })
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -29,14 +26,17 @@ export default function CreateInstrument() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
     const errorMessage = validateValues(values)
     if (errorMessage) {
       setError(errorMessage)
       return
     }
+
     try {
       setIsLoading(true)
-      await fetchHelper().post('http://localhost:8080/instrumentos', {
+      await fetchHelper().put('http://localhost:8080/instrumentos', {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),
       })
@@ -51,19 +51,22 @@ export default function CreateInstrument() {
   return (
     <>
       <h2
-        className="text-xl font-semibold text-[#E2AA11]"
+        className="text-xl font-semibold text-[#E2AA11] flex flex-col"
         style={{ fontFamily: 'Poppins' }}
       >
-        Agregar Nuevo Instrumento
+        <span>Editar el instrumento</span>
+        <span>{instrument.instrumento}</span>
       </h2>
       <Form
         error={error}
-        formFields={formFields}
+        formFields={createFormFields(values)}
         handleChange={handleChange}
         handleSubmit={handleSubmit}
         isLoading={isLoading}
-        isEditing={false}
+        isEditing={true}
       />
     </>
   )
 }
+
+export default EditInstrument

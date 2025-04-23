@@ -1,10 +1,7 @@
 package org.example.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @AllArgsConstructor
@@ -12,9 +9,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Table(name="instrumento")
+@Builder
 public class Instrumento {
     @Id
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String instrumento;
     private String marca;
     private String modelo;
@@ -25,5 +24,9 @@ public class Instrumento {
     
     @Column(length = 2048)
     private String descripcion;
+
+    @ManyToOne
+    @JoinColumn(name = "id_categoria", nullable = false)
+    private CategoriaInstrumento categoria;
 
 }

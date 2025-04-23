@@ -15,16 +15,115 @@ public class Main {
     @Bean
     public CommandLineRunner initData(InstrumentoRepository repo) {
         return args -> {
-            repo.save(new Instrumento(1, "Mandolina Instrumento Musical Stagg Sunburst", "Stagg", "M20", "https://res.cloudinary.com/drqdadlel/image/upload/v1744489004/img/bpud3cpecsct75fa7lfg.jpg", 2450.0, "G", 28, "Estas viendo una excelente mandolina de la marca Stagg, con un sonido muy dulce, tapa aros y fondo de tilo, y diapasón de palisandro. Es un instrumento acústico (no se enchufa) de cuerdas dobles (4 pares) con la caja ovalada y cóncava, y el mástil corto. Su utilización abarca variados ámbitos, desde rock, folk, country y ensambles experimentales."));
-            repo.save(new Instrumento(2, "Pandereta Pandero Instrumento Musical", "DyM ventas", "32 sonajas", "https://res.cloudinary.com/drqdadlel/image/upload/v1744489005/img/tm6uoijiavia8wkucocf.jpg", 325.0, "150", 10, "1 Pandereta - 32 sonajas metálicas. Más de 8 años vendiendo con 100 % de calificaciones POSITIVAS y clientes satisfechos !! "));
-            repo.save(new Instrumento(3, "Triangulo Musical 24 Cm Percusion", "LBP", "24", "https://res.cloudinary.com/drqdadlel/image/upload/v1744489005/img/wulkkasvoronezfuyvsl.jpg", 260.0, "250", 3, "Triangulo Musical de 24 Centímetros De Acero. ENVIOS POR CORREO O ENCOMIENDA: Se le deberán adicionar $40 en concepto de Despacho y el Costo del envío se abonará al recibir el producto en Terminal, Sucursal OCA o Domicilio"));
-            repo.save(new Instrumento(4, "Bar Chimes Lp Cortina Musical 72 Barras", "FM", "LATIN", "https://res.cloudinary.com/drqdadlel/image/upload/v1744489004/img/cax21rtbkx4uvmsbxnal.jpg", 2250.0, "G", 2, "BARCHIME CORTINA MUSICAL DE 25 BARRAS LATIN CUSTOM. Emitimos factura A y B"));
-            repo.save(new Instrumento(5, "Shekeres. Instrumento. Música. Artesanía.", "Azalea Artesanías", "Cuentas de madera", "https://res.cloudinary.com/drqdadlel/image/upload/v1744489005/img/kmnrnr0nvlazddejnbna.jpg", 850.0, "300", 5, "Las calabazas utilizadas para nuestras artesanías son sembradas y cosechadas por nosotros, quienes seleccionamos el mejor fruto para garantizar la calidad del producto y ofrecerle algo creativo y original."));
-            repo.save(new Instrumento(6, "Antiguo Piano Aleman Con Candelabros.", "Neumeyer", "Stratus", "https://res.cloudinary.com/drqdadlel/image/upload/v1744489004/img/x3h9g0ckr8tafbol7oum.jpg", 17000.0, "2000", 0, "Buen dia! Sale a la venta este Piano Alemán Neumeyer con candelabros incluidos. Tiene una talla muy bonita en la madera. Una pieza de calidad."));
-            repo.save(new Instrumento(7, "Guitarra Ukelele Infantil Grande 60cm", "GUITARRA", "UKELELE", "https://res.cloudinary.com/drqdadlel/image/upload/v1744489004/img/zx5zu3whw3zeaodbrcf0.jpg", 500.0, "G", 5,  "Material: Plástico smil madera 4 Cuerdas longitud: 60cm, el mejor regalo para usted, su familia y amigos, adecuado para 3-18 años de edad"));
-            repo.save(new Instrumento(8, "Teclado Organo Electronico Musical Instrumento 54 Teclas", "GADNIC", "T01", "https://res.cloudinary.com/drqdadlel/image/upload/v1744489004/img/ddidmghbuhctccsxgjak.jpg", 2250.0, "G", 1375, "Organo Electrónico GADNIC T01. Display de Led. 54 Teclas. 100 Timbres / 100 Ritmos. 4 1/2 octavas. 8 Percusiones. 8 Canciones de muestra. Grabación y reproducción. Entrada para Micrófono. Salida de Audio (Auriculares / Amplificador). Vibrato. Sustain Incluye Atril Apoya partitura y Micrófono. Dimensiones: 84,5 x 32,5 x 11 cm"));
-            repo.save(new Instrumento(9, "Instrumentos De Percusión Niños Set Musical Con Estuche", "KNIGHT", "LB17", "https://res.cloudinary.com/drqdadlel/image/upload/v1744489005/img/gdlk5pjyfbb3nsbbmelj.jpg", 2700.0, "300", 15, "Estas viendo un excelente y completísimo set de percusion para niños con estuche rígido, equipado con los instrumentos mas divertidos! De gran calidad y sonoridad. Ideal para jardines, escuelas primarias, musicoterapeutas o chicos que se quieran iniciar en la música de la mejor manera. Es un muy buen producto que garantiza entretenimiento en cualquier casa o reunión, ya que esta equipado para que varias personas al mismo tiempo estén tocando un instrumento."));
-            repo.save(new Instrumento(10, "Batería Musical Infantil Juguete Niño 9 Piezas Palillos", "Bateria", "Infantil", "https://res.cloudinary.com/drqdadlel/image/upload/v1744489005/img/m9vuuveqxbafrfsynsdb.jpg", 850.0, "250", 380, "DESCRIPCIÓN: DE 1 A 3 AÑOS. EL SET INCLUYE 5 TAMBORES, PALILLOS Y EL PLATILLO TAL CUAL LAS FOTOS. SONIDOS REALISTAS Y FÁCIL DE MONTAR. MEDIDAS: 40X20X46 CM"));
+            repo.save(Instrumento.builder()
+                    .instrumento("Mandolina Instrumento Musical Stagg Sunburst")
+                    .marca("Stagg")
+                    .modelo("M20")
+                    .imagen("https://res.cloudinary.com/drqdadlel/image/upload/v1744489004/img/bpud3cpecsct75fa7lfg.jpg")
+                    .precio(2450.0)
+                    .costoEnvio("G")
+                    .cantidadVendida(28)
+                    .descripcion("Estas viendo una excelente mandolina de la marca Stagg, con un sonido muy dulce, tapa aros y fondo de tilo, y diapasón de palisandro...")
+                    .build());
+
+            repo.save(Instrumento.builder()
+                    .instrumento("Pandereta Pandero Instrumento Musical")
+                    .marca("DyM ventas")
+                    .modelo("32 sonajas")
+                    .imagen("https://res.cloudinary.com/drqdadlel/image/upload/v1744489005/img/tm6uoijiavia8wkucocf.jpg")
+                    .precio(325.0)
+                    .costoEnvio("150")
+                    .cantidadVendida(10)
+                    .descripcion("1 Pandereta - 32 sonajas metálicas. Más de 8 años vendiendo con 100 % de calificaciones POSITIVAS y clientes satisfechos!!")
+                    .build());
+
+            repo.save(Instrumento.builder()
+                    .instrumento("Triángulo Musical 24 Cm Percusión")
+                    .marca("LBP")
+                    .modelo("24")
+                    .imagen("https://res.cloudinary.com/drqdadlel/image/upload/v1744489005/img/wulkkasvoronezfuyvsl.jpg")
+                    .precio(260.0)
+                    .costoEnvio("250")
+                    .cantidadVendida(3)
+                    .descripcion("Triángulo Musical de 24 Centímetros de acero...")
+                    .build());
+
+            repo.save(Instrumento.builder()
+                    .instrumento("Bar Chimes LP Cortina Musical 72 Barras")
+                    .marca("FM")
+                    .modelo("LATIN")
+                    .imagen("https://res.cloudinary.com/drqdadlel/image/upload/v1744489004/img/cax21rtbkx4uvmsbxnal.jpg")
+                    .precio(2250.0)
+                    .costoEnvio("G")
+                    .cantidadVendida(2)
+                    .descripcion("BARCHIME CORTINA MUSICAL DE 25 BARRAS LATIN CUSTOM. Emitimos factura A y B.")
+                    .build());
+
+            repo.save(Instrumento.builder()
+                    .instrumento("Shekeres. Instrumento. Música. Artesanía.")
+                    .marca("Azalea Artesanías")
+                    .modelo("Cuentas de madera")
+                    .imagen("https://res.cloudinary.com/drqdadlel/image/upload/v1744489005/img/kmnrnr0nvlazddejnbna.jpg")
+                    .precio(850.0)
+                    .costoEnvio("300")
+                    .cantidadVendida(5)
+                    .descripcion("Las calabazas utilizadas para nuestras artesanías son sembradas y cosechadas por nosotros...")
+                    .build());
+
+            repo.save(Instrumento.builder()
+                    .instrumento("Antiguo Piano Alemán Con Candelabros")
+                    .marca("Neumeyer")
+                    .modelo("Stratus")
+                    .imagen("https://res.cloudinary.com/drqdadlel/image/upload/v1744489004/img/x3h9g0ckr8tafbol7oum.jpg")
+                    .precio(17000.0)
+                    .costoEnvio("2000")
+                    .cantidadVendida(0)
+                    .descripcion("Piano Alemán Neumeyer con candelabros incluidos. Talla muy bonita en la madera. Una pieza de calidad.")
+                    .build());
+
+            repo.save(Instrumento.builder()
+                    .instrumento("Guitarra Ukelele Infantil Grande 60cm")
+                    .marca("GUITARRA")
+                    .modelo("UKELELE")
+                    .imagen("https://res.cloudinary.com/drqdadlel/image/upload/v1744489004/img/zx5zu3whw3zeaodbrcf0.jpg")
+                    .precio(500.0)
+                    .costoEnvio("G")
+                    .cantidadVendida(5)
+                    .descripcion("Material: Plástico símil madera. 4 cuerdas. Longitud: 60cm. Adecuado para 3-18 años de edad.")
+                    .build());
+
+            repo.save(Instrumento.builder()
+                    .instrumento("Teclado Órgano Electrónico Musical 54 Teclas")
+                    .marca("GADNIC")
+                    .modelo("T01")
+                    .imagen("https://res.cloudinary.com/drqdadlel/image/upload/v1744489004/img/ddidmghbuhctccsxgjak.jpg")
+                    .precio(2250.0)
+                    .costoEnvio("G")
+                    .cantidadVendida(1375)
+                    .descripcion("Órgano Electrónico GADNIC T01. Display LED. 54 teclas. 100 timbres, 100 ritmos...")
+                    .build());
+
+            repo.save(Instrumento.builder()
+                    .instrumento("Set Instrumentos de Percusión para Niños con Estuche")
+                    .marca("KNIGHT")
+                    .modelo("LB17")
+                    .imagen("https://res.cloudinary.com/drqdadlel/image/upload/v1744489005/img/gdlk5pjyfbb3nsbbmelj.jpg")
+                    .precio(2700.0)
+                    .costoEnvio("300")
+                    .cantidadVendida(15)
+                    .descripcion("Set de percusión para niños con estuche rígido. Ideal para escuelas, jardines y musicoterapeutas.")
+                    .build());
+
+            repo.save(Instrumento.builder()
+                    .instrumento("Batería Musical Infantil Juguete Niño 9 Piezas Palillos")
+                    .marca("Bateria")
+                    .modelo("Infantil")
+                    .imagen("https://res.cloudinary.com/drqdadlel/image/upload/v1744489005/img/m9vuuveqxbafrfsynsdb.jpg")
+                    .precio(850.0)
+                    .costoEnvio("250")
+                    .cantidadVendida(380)
+                    .descripcion("Incluye 5 tambores, platillo y palillos. Sonidos realistas. Fácil de montar. Medidas: 40x20x46 cm.")
+                    .build());
         };
     }
 }

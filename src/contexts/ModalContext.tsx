@@ -1,19 +1,34 @@
 import { createContext, ReactNode, useContext, useState } from 'react'
-import { ModalContextType } from '../types/modalContextType'
 
-const initialState: boolean = false
+interface ModalContextType {
+  isOpen: boolean
+  content: ReactNode | null
+  openModal: (content: ReactNode) => void
+  closeModal: () => void
+}
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined)
 
-interface GLobalProps {
+interface GlobalProps {
   children: ReactNode
 }
 
-export const ModalProvider = ({ children }: GLobalProps) => {
-  const [state, setState] = useState<boolean>(initialState)
+export const ModalProvider = ({ children }: GlobalProps) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const [content, setContent] = useState<ReactNode | null>(null)
+
+  const openModal = (modalContent: ReactNode) => {
+    setContent(modalContent)
+    setIsOpen(true)
+  }
+
+  const closeModal = () => {
+    setContent(null)
+    setIsOpen(false)
+  }
 
   return (
-    <ModalContext.Provider value={{ state, setState }}>
+    <ModalContext.Provider value={{ isOpen, content, openModal, closeModal }}>
       {children}
     </ModalContext.Provider>
   )
@@ -21,12 +36,8 @@ export const ModalProvider = ({ children }: GLobalProps) => {
 
 export const useModalContext = () => {
   const context = useContext(ModalContext)
-
   if (!context) {
-    throw new Error(
-      'ModalContext must be used whithin the ModalContextProvider.'
-    )
+    throw new Error('ModalContext must be used within the ModalProvider.')
   }
-
   return context
 }
