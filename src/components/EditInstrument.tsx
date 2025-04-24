@@ -5,8 +5,10 @@ import { useModalContext } from '../contexts/ModalContext'
 import fetchHelper from '../helpers/fetchHelper'
 import { createFormFields } from '../utils/createFormFields'
 import { validateValues } from '../utils/validateValues'
+import { useDataContext } from '../contexts/DataContext'
 
 const EditInstrument = ({ instrument }: { instrument: Instrumento }) => {
+  const { reloadTrigger, setReloadTrigger } = useDataContext()
   const { closeModal } = useModalContext()
   const [values, setValues] = useState<Instrumento>({
     ...instrument,
@@ -14,7 +16,9 @@ const EditInstrument = ({ instrument }: { instrument: Instrumento }) => {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setValues({
       ...values,
       [e.target.name]:
@@ -26,7 +30,6 @@ const EditInstrument = ({ instrument }: { instrument: Instrumento }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
     const errorMessage = validateValues(values)
     if (errorMessage) {
       setError(errorMessage)
@@ -35,11 +38,15 @@ const EditInstrument = ({ instrument }: { instrument: Instrumento }) => {
 
     try {
       setIsLoading(true)
-      await fetchHelper().put('http://localhost:8080/instrumentos', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      })
+      await fetchHelper().put(
+        `http://localhost:8080/instrumentos/${values.id}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(values),
+        }
+      )
+      setReloadTrigger(!reloadTrigger)
       closeModal()
     } catch (error: unknown) {
       setError(`${error}`)

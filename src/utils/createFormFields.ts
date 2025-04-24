@@ -50,4 +50,10 @@ export const createFormFields = (instrument: Instrumento): FormField[] => [
     type: 'text',
     value: instrument.descripcion,
   },
+  {
+    label: 'Categoría',
+    name: 'categoria',
+    type: 'select',
+    value: instrument.categoria,
+  },
 ]

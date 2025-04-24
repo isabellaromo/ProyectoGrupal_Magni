@@ -5,7 +5,7 @@ type Props = {
   formFields: {
     label: string
     name: string
-    placeholder: string
+    placeholder?: string
     type: string
     value?: string | number
   }[]
@@ -33,7 +33,7 @@ const Form = ({
           key={`Instrument field ${index}`}
           label={item.label}
           name={item.name}
-          placeholder={item.placeholder}
+          placeholder={item.placeholder ? item.placeholder : ''}
           type={item.type}
           handleChange={handleChange}
           value={item.value ? item.value : undefined}
@@ -50,9 +50,8 @@ const Form = ({
           : 'Crear'}
       </button>
       {error && (
-        <p className="flex gap-1">
-          <span className="text-red-500">{error}.</span>
-          <span>Por favor, vuelva a intentar</span>
+        <p className="flex gap-1 justify-center">
+          <span className="text-red-500">{error}</span>
         </p>
       )}
     </form>

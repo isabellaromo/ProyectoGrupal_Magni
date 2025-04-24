@@ -2,6 +2,7 @@ package org.example.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.enums.Category;
 
 @Entity
 @Table(name = "categoria_instrumento")
@@ -15,5 +16,6 @@ public class CategoriaInstrumento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String denominacion;
+    @Enumerated(EnumType.STRING)
+    private Category denominacion;
 }

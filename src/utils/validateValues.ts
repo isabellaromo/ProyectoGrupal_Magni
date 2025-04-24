@@ -10,6 +10,7 @@ export const validateValues = (values: Instrumento): string | null => {
     costoEnvio,
     cantidadVendida,
     descripcion,
+    categoria,
   } = values
 
   // Validar strings no vacíos
@@ -18,6 +19,7 @@ export const validateValues = (values: Instrumento): string | null => {
   if (!modelo.trim()) return 'El campo "modelo" no puede estar vacío.'
   if (!imagen.trim()) return 'El campo "imagen" no puede estar vacío.'
   if (!descripcion.trim()) return 'El campo "descripción" no puede estar vacío.'
+  if (!categoria.trim()) return 'El campo "categoria" no puede estar vacío.'
 
   // Validar números positivos o cero
   if (isNaN(precio) || precio < 1)

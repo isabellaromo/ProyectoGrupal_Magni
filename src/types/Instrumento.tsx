@@ -1,5 +1,5 @@
 export interface Instrumento {
-  id: number
+  id?: number
   instrumento: string
   marca: string
   modelo: string
@@ -8,11 +8,12 @@ export interface Instrumento {
   costoEnvio: string
   cantidadVendida: number
   descripcion: string
+  categoria: string
 }
 export type FormField = {
   label: string
   name: string
-  placeholder: string
+  placeholder?: string
   type: string
   value?: string | number
 }

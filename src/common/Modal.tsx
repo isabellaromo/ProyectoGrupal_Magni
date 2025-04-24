@@ -35,7 +35,7 @@ const Modal = () => {
     >
       <div
         ref={modalRef}
-        className="relative bg-white rounded-lg pt-8 px-8 pb-2 shadow-lg max-h-[100vh] overflow-y-auto max-w-[600px]"
+        className="relative bg-white rounded-lg pt-4 px-8 pb-2 shadow-lg max-h-[100vh] overflow-y-auto w-[400px]"
         onClick={handleContentClick}
       >
         <button

@@ -1,6 +1,8 @@
 package org.example.controllers;
 
+import org.example.dtos.InstrumentoDTO;
 import org.example.entities.Instrumento;
+import org.example.enums.Category;
 import org.example.services.InstrumentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +22,7 @@ public class InstrumentoController {
     }
 
     @GetMapping
-    public List<Instrumento> getAllInstrumentos(){
+    public List<InstrumentoDTO> getAllInstrumentos(){
         return instrumentoService.obtenerTodos();
     }
     
@@ -29,20 +31,26 @@ public class InstrumentoController {
         return instrumentoService.obtenerPorId(id);
     }
 
-    @PostMapping()
-    public ResponseEntity<?> insertInstrumento(@RequestBody Instrumento instrumento){
-        return ResponseEntity.status(HttpStatus.OK).body(instrumentoService.crearInstrumento(instrumento));
+    @PostMapping
+    public ResponseEntity<?> insertInstrumento(@RequestBody InstrumentoDTO dto) {
+        Instrumento instrumento = instrumentoService.crearInstrumento(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(instrumento);
     }
-
     @PutMapping("/{id}")
-    public ResponseEntity<Instrumento> actualizarInstrumento(@PathVariable Long id, @RequestBody Instrumento instrumento) {
-        Instrumento actualizado = instrumentoService.actualizarInstrumento(id, instrumento);
+    public ResponseEntity<Instrumento> actualizarInstrumento(@PathVariable Long id, @RequestBody InstrumentoDTO dto) {
+        Instrumento actualizado = instrumentoService.actualizarInstrumento(id, dto);
         return ResponseEntity.ok(actualizado);
     }
 
     @GetMapping("/categoria/{idCategoria}")
     public ResponseEntity<List<Instrumento>> getByCategoria(@PathVariable Long idCategoria) {
         return ResponseEntity.ok(instrumentoService.obtenerPorCategoria(idCategoria));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarInstrumento(@PathVariable Long id) {
+        instrumentoService.eliminarInstrumento(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

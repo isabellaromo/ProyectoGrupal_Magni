@@ -27,9 +27,15 @@ export default function ItemInstrumentstable({
         <td className="px-4 text-center">{instrument.modelo}</td>
         <td className="px-4 rounded-r-md text-center">{instrument.precio}</td>
         <td className="px-4 rounded-r-md text-center">
+          {instrument.costoEnvio}
+        </td>
+        <td className="px-4 rounded-r-md text-center">
+          {instrument.categoria}
+        </td>
+        <td className="px-4 rounded-r-md text-center">
           {instrument.cantidadVendida}
         </td>
-        <td className="px-4 rounded-r-md w-[300px]">
+        <td className="px-4 rounded-r-md w-[150px]">
           <p className="max-h-12 overflow-hidden">{instrument.descripcion}</p>
           <span className="text-lg">...</span>
         </td>
@@ -39,19 +45,27 @@ export default function ItemInstrumentstable({
               openModal(<EditInstrument instrument={instrument} />)
             }
           >
-            <IoPencil className="size-6" />
+            <IoPencil
+              className="size-6 cursor-pointer"
+              title="Editar"
+              color="#6eac5c"
+            />
           </button>
           <button
             onClick={() =>
               openModal(
                 <DeleteInstrument
                   name={instrument.instrumento}
-                  id={instrument.id}
+                  id={instrument.id ? instrument.id : 0}
                 />
               )
             }
           >
-            <IoTrash className="size-6" />
+            <IoTrash
+              className="size-6 cursor-pointer"
+              title="Eliminar"
+              color="#b85252"
+            />
           </button>
         </td>
       </tr>

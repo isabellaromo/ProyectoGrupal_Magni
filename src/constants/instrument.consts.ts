@@ -9,6 +9,7 @@ export const createInstrumentInitialValues: Instrumento = {
   costoEnvio: 'G',
   cantidadVendida: 0,
   descripcion: '',
+  categoria: 'cuerda',
 }
 
 export const formFields = [
@@ -53,5 +54,11 @@ export const formFields = [
     name: 'descripcion',
     placeholder: 'Madera de alta calidad y sonido excepcional',
     type: 'text',
+  },
+  {
+    label: 'Categoría',
+    name: 'categoria',
+    value: 'cuerda',
+    type: 'select',
   },
 ]

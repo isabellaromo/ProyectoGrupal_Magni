@@ -1,35 +1,10 @@
-import { useEffect, useState } from 'react'
-import { Instrumento } from '../types/Instrumento'
 import ItemInstrumentstable from '../common/ItemInstrumentstable'
 import { IoReload } from 'react-icons/io5'
+import { useDataContext } from '../contexts/DataContext'
 
 const InstrumentsTable = () => {
-  const [data, setData] = useState<Instrumento[]>([])
-  const [reloadTrigger, setReloadTrigger] = useState<number>(0)
-  const [error, setError] = useState<Error | null>(null)
-  const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-        const response = await fetch('http://localhost:8080/instrumentos')
-        if (!response.ok) {
-          throw new Error(`${response.status}`)
-        }
-        const data = await response.json()
-        setData(data)
-      } catch (error: unknown) {
-        setError(
-          new Error(`Error al intentar traer los instrumentos. ${error}`)
-        )
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchData()
-  }, [reloadTrigger])
+  const { data, error, loading, reloadTrigger, setReloadTrigger } =
+    useDataContext()
   return (
     <table className="table-auto text-left min-w-full divide-y divide-gray-500/50">
       <thead className="border-b-[1px] border-zinc-600/50 text-xl">
@@ -39,9 +14,11 @@ const InstrumentsTable = () => {
           <th className="font-medium text-center">Marca</th>
           <th className="font-medium text-center">Modelo</th>
           <th className="font-medium text-center">Precio</th>
+          <th className="font-medium text-center">Costo Envío</th>
+          <th className="font-medium text-center">Categoría</th>
           <th className="font-medium text-center">Cant. Vendida</th>
           <th className="font-medium text-center">Descripción</th>
-          <th className="font-medium text-center pr-6">Opciones</th>
+          <th className="font-medium text-end pr-6">Opciones</th>
         </tr>
       </thead>
       <tbody>
@@ -65,10 +42,12 @@ const InstrumentsTable = () => {
               colSpan={9}
               className="text-center text-lg font-semibold text-[#e24c11] "
             >
-              <span>{error.message}</span>
+              <span>{error}</span>
               <button
                 className="ml-2 cursor-pointer"
-                onClick={() => setReloadTrigger(reloadTrigger + 1)}
+                onClick={() => {
+                  setReloadTrigger(!reloadTrigger)
+                }}
               >
                 <IoReload className="size-6 self-center text-center inline" />
               </button>

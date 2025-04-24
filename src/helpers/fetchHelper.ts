@@ -13,6 +13,11 @@ export default function fetchHelper() {
     setTimeout(() => controller.abort(), 3000)
 
     const response = await fetch(endpoint, options)
+    if (options.method === 'DELETE') {
+      if (response.status == 204) {
+        return { message: 'Instrumento eliminado' }
+      }
+    }
     if (!response.ok) {
       throw new Error(`${response.status}`)
     }
