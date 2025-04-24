@@ -42,9 +42,9 @@ public class InstrumentoController {
         return ResponseEntity.ok(actualizado);
     }
 
-    @GetMapping("/categoria/{idCategoria}")
-    public ResponseEntity<List<Instrumento>> getByCategoria(@PathVariable Long idCategoria) {
-        return ResponseEntity.ok(instrumentoService.obtenerPorCategoria(idCategoria));
+    @GetMapping("/categoria/{category}")
+    public ResponseEntity<List<InstrumentoDTO>> getByCategoria(@PathVariable String category) {
+        return ResponseEntity.ok(instrumentoService.obtenerPorCategoria(category));
     }
 
     @DeleteMapping("/{id}")

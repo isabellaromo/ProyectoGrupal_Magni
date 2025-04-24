@@ -13,8 +13,10 @@ const initialState: Instrumento[] = []
 interface DataContextType {
   data: Instrumento[]
   setData: React.Dispatch<React.SetStateAction<Instrumento[]>>
-  error?: String | null
+  error?: string | null
+  setError: React.Dispatch<React.SetStateAction<string | null>>
   loading?: boolean
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>
   reloadTrigger: boolean
   setReloadTrigger: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -27,7 +29,7 @@ interface DataProps {
 
 export const DataProvider = ({ children }: DataProps) => {
   const [data, setData] = useState<Instrumento[]>(initialState)
-  const [error, setError] = useState<String | null>(null)
+  const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [reloadTrigger, setReloadTrigger] = useState(false)
 
@@ -53,7 +55,16 @@ export const DataProvider = ({ children }: DataProps) => {
 
   return (
     <DataContext.Provider
-      value={{ data, setData, error, loading, reloadTrigger, setReloadTrigger }}
+      value={{
+        data,
+        setData,
+        error,
+        loading,
+        reloadTrigger,
+        setReloadTrigger,
+        setError,
+        setLoading,
+      }}
     >
       {children}
     </DataContext.Provider>

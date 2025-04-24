@@ -97,8 +97,30 @@ public class InstrumentoService {
     }
 
 
-    public List<Instrumento> obtenerPorCategoria(Long idCategoria) {
-        return instrumentoRepository.findByCategoriaId(idCategoria);
+    public List<InstrumentoDTO> obtenerPorCategoria(String category) {
+        Category categoryEnum = Category.valueOf(category);
+        CategoriaInstrumento categoria = categoriaInstrumentoRepository
+                .findByDenominacion(categoryEnum)
+                .orElseGet(() -> categoriaInstrumentoRepository.save(
+                        CategoriaInstrumento.builder().denominacion(categoryEnum).build()
+                ));
+
+        List<Instrumento> list = instrumentoRepository.findByCategoriaId(categoria.getId());
+        List<InstrumentoDTO> newList = list.stream()
+                .map(instrumento -> new InstrumentoDTO(
+                        instrumento.getId(),
+                        instrumento.getInstrumento(),
+                        instrumento.getMarca(),
+                        instrumento.getModelo(),
+                        instrumento.getImagen(),
+                        instrumento.getPrecio(),
+                        instrumento.getCostoEnvio(),
+                        instrumento.getCantidadVendida(),
+                        instrumento.getDescripcion(),
+                        instrumento.getCategoria().getDenominacion().toString()
+                ))
+                .collect(Collectors.toList());
+        return newList;
     }
 
     public void eliminarInstrumento(Long id) {
