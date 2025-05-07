@@ -16,10 +16,15 @@ import java.util.stream.Collectors;
 @Service
 public class InstrumentoService {
     
-    @Autowired
-    private InstrumentoRepository instrumentoRepository;
-    @Autowired
-    private CategoriaInstrumentoRepository categoriaInstrumentoRepository;
+
+    private final InstrumentoRepository instrumentoRepository;
+
+    private final CategoriaInstrumentoRepository categoriaInstrumentoRepository;
+
+    public InstrumentoService(InstrumentoRepository instrumentoRepository, CategoriaInstrumentoRepository categoriaInstrumentoRepository) {
+        this.instrumentoRepository = instrumentoRepository;
+        this.categoriaInstrumentoRepository = categoriaInstrumentoRepository;
+    }
 
     public List<InstrumentoDTO> obtenerTodos() {
         List<Instrumento> list = instrumentoRepository.findAll();
@@ -45,7 +50,7 @@ public class InstrumentoService {
 
     public Instrumento crearInstrumento(InstrumentoDTO dto) {
         // Convertimos el string a enum
-        Category categoryEnum = Category.valueOf(dto.getCategoria().toUpperCase());
+        Category categoryEnum = Category.valueOf(dto.categoria().toUpperCase());
 
         // Buscamos o creamos la categoría
         CategoriaInstrumento categoria = categoriaInstrumentoRepository
@@ -58,14 +63,14 @@ public class InstrumentoService {
 
         // Creamos el instrumento
         Instrumento instrumento = Instrumento.builder()
-                .instrumento(dto.getInstrumento())
-                .marca(dto.getMarca())
-                .modelo(dto.getModelo())
-                .imagen(dto.getImagen())
-                .precio(dto.getPrecio())
-                .costoEnvio(dto.getCostoEnvio())
-                .cantidadVendida(dto.getCantidadVendida())
-                .descripcion(dto.getDescripcion())
+                .instrumento(dto.instrumento())
+                .marca(dto.marca())
+                .modelo(dto.modelo())
+                .imagen(dto.imagen())
+                .precio(dto.precio())
+                .costoEnvio(dto.costoEnvio())
+                .cantidadVendida(dto.cantidadVendida())
+                .descripcion(dto.descripcion())
                 .categoria(categoria)
                 .build();
 
@@ -76,21 +81,21 @@ public class InstrumentoService {
         Instrumento existente = instrumentoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Instrumento no encontrado"));
 
-        Category categoryEnum = Category.valueOf(dto.getCategoria().toUpperCase());
+        Category categoryEnum = Category.valueOf(dto.categoria().toUpperCase());
         CategoriaInstrumento categoria = categoriaInstrumentoRepository
                 .findByDenominacion(categoryEnum)
                 .orElseGet(() -> categoriaInstrumentoRepository.save(
                         CategoriaInstrumento.builder().denominacion(categoryEnum).build()
                 ));
 
-        existente.setInstrumento(dto.getInstrumento());
-        existente.setMarca(dto.getMarca());
-        existente.setModelo(dto.getModelo());
-        existente.setImagen(dto.getImagen());
-        existente.setPrecio(dto.getPrecio());
-        existente.setCostoEnvio(dto.getCostoEnvio());
-        existente.setCantidadVendida(dto.getCantidadVendida());
-        existente.setDescripcion(dto.getDescripcion());
+        existente.setInstrumento(dto.instrumento());
+        existente.setMarca(dto.marca());
+        existente.setModelo(dto.modelo());
+        existente.setImagen(dto.imagen());
+        existente.setPrecio(dto.precio());
+        existente.setCostoEnvio(dto.costoEnvio());
+        existente.setCantidadVendida(dto.cantidadVendida());
+        existente.setDescripcion(dto.descripcion());
         existente.setCategoria(categoria);
 
         return instrumentoRepository.save(existente);

@@ -2,9 +2,7 @@ package org.example.controllers;
 
 import org.example.dtos.InstrumentoDTO;
 import org.example.entities.Instrumento;
-import org.example.enums.Category;
 import org.example.services.InstrumentoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
