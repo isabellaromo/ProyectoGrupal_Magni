@@ -10,7 +10,7 @@ const Item = ({ instrumento }: { instrumento: Instrumento }) => {
     <div className="h-[200px] w-[650px] flex flex-col">
       <div className="h-[95%] w-full flex gap-3 justify-start items-center">
         <div className="flex justify-center items-center">
-          <img className="w-[80%]" src={`/img/${instrumento.imagen}`} alt={`Imagen de ${instrumento.descripcion}`} />
+          <img className="w-[80%]" src={`${instrumento.imagen}`} alt={`Imagen de ${instrumento.descripcion}`} />
         </div>
         <div className="h-full flex flex-col gap-1 justify-center">
           <h3 className="text-lg text-gray-800 font-light">{instrumento.instrumento}</h3>
