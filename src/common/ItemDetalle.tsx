@@ -1,12 +1,16 @@
+import { useContext } from "react";
 import { Instrumento } from "../types/Instrumento"
 import Camion from "/img/camion.png"
 import { Link } from 'react-router-dom';
+import { CartContext } from "../contexts/CartContext";
 
 interface ItemProps {
     item: Instrumento;
 }
 
 const ItemDetalle: React.FC<ItemProps> = ({ item }) => {
+    const {addCarrito} = useContext(CartContext)
+
     return (
         <div>
             <p className="m-8"><Link to={"/"} className="text-[#E2AA11] text-2xl font-bold" > ← Inicio</Link></p>
@@ -26,7 +30,10 @@ const ItemDetalle: React.FC<ItemProps> = ({ item }) => {
                     </div>
                     <p className={`${item.costoEnvio === "G" ? "text-green-600 flex my-2" : "text-[#E2AA11]"}`}>
                         {item.costoEnvio === "G" ? (<><img src={Camion} alt="Icono de camión" /> Envío gratis</>) : <>Costo de envío: ${item.costoEnvio}</>}</p>
-                    <button onClick={() => { alert(`${item.instrumento} añadido al carrito`) }} className="py-2 px-5 bg-none border-1 border-[#00000050] text-lg cursor-pointer">Añadir al Carrito</button>
+                    <button
+                    onClick={() => {addCarrito(item); alert(`${item.instrumento} añadido al carrito`) }}
+                    className="py-2 px-5 bg-none border-1 border-[#00000050] text-lg cursor-pointer"
+                    >Añadir al Carrito</button>
                 </div>
             </div>
         </div>

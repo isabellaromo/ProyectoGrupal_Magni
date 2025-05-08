@@ -4,14 +4,17 @@ import AppRoutes from './routes/AppRoutes'
 import { ModalProvider } from './contexts/ModalContext'
 import Modal from './common/Modal'
 import { DataProvider } from './contexts/DataContext'
+import { CartProvider } from './contexts/CartContext'
 
 function App() {
   return (
     <ModalProvider>
       <DataProvider>
-        <Router>
-          <AppRoutes />
-        </Router>
+        <CartProvider>
+          <Router>
+            <AppRoutes />
+          </Router>
+        </CartProvider>
         <Modal />
       </DataProvider>
     </ModalProvider>

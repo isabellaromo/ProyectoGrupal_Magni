@@ -28,7 +28,7 @@ const Item = ({ instrumento }: { instrumento: Instrumento }) => {
           <p className="text-sm text-gray-500">{instrumento.cantidadVendida} vendidos</p>
           <div>
             <Link to={`/detalle/${instrumento.id}`}>
-              <Button text={"Ver detalle"} width="w-100px" height="h-30px" />
+              <Button text={"Ver detalle"} width="w-150px" height="h-30px" />
             </Link>
           </div>
         </div>
