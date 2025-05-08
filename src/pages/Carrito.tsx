@@ -18,6 +18,19 @@ const Carrito: React.FC = () => {
         setTotal(newTotal)
     }, [cart])
 
+    if (cart.length === 0) {
+        return (
+            <section className="h-full w-full">
+                <div className="h-full flex items-center justify-center">
+                    <div>
+                        <h3 className="titulo-seccion">TU CARRITO</h3>
+                        <p className="my-8 text-center">No tienes nada en tu carrito.</p>
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
     return (
         <section className="h-full w-full">
             <div className="h-full flex items-center justify-center">
