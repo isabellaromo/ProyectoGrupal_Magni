@@ -8,17 +8,18 @@ import Carrito from '../pages/Carrito'
 
 const AppRoutes = () => {
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Header />
-        <Routes>
-
+        <main className="flex-grow">
+        <Routes >
             <Route path="/" element={<Landing />} />
             <Route path="/detalle/:id" element={<Detalle />} />
             <Route path="/admin/instrumentos" element={<AdminInstruments />} />
             <Route path="/carrito" element={<Carrito />} />
         </Routes>
+            </main>
       <Footer />
-    </>
+    </div>
   )
 }
 

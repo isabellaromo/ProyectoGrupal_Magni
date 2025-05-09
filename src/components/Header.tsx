@@ -1,8 +1,12 @@
 import { GiGuitarHead } from 'react-icons/gi'
 import { FaShoppingCart } from "react-icons/fa";
 import { Link } from 'react-router-dom'
+import { useContext } from 'react';
+import { CartContext } from '../contexts/CartContext';
 
 const Header: React.FC = () => {
+      const {cart} = useContext(CartContext)
+  
   return (
     <header className="w-full h-[80px] text-sm m-0 bg-[#333] flex items-center justify-around p-4">
       <p>
@@ -21,15 +25,18 @@ const Header: React.FC = () => {
           Productos
         </a>
       </p>
+        <Link to="/"  >
       <div className="flex items-center gap-5 text-[#E2AA11] text-5xl">
-        <GiGuitarHead />
-        <h2>difusa</h2>
+          <GiGuitarHead />
+          <h2>difusa</h2>
       </div>
-      <div className='flex items-center gap-5 text-[#E2AA11] text-xl'>
-        <Link to={"/carrito"}>
-          <FaShoppingCart/>
         </Link>
+        <Link to={"/carrito"}>
+      <div className='flex items-center gap-5 text-[#E2AA11] text-xl'>
+          <FaShoppingCart />
+          <p>{cart.length > 0 && cart.length}</p>
       </div>
+        </Link>
       <p>
         <Link
           to={'/admin/instrumentos'}

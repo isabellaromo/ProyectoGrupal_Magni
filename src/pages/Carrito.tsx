@@ -6,7 +6,7 @@ import { CartItemType } from "../types/CartItemType";
 
 const Carrito: React.FC = () => {
 
-    const {cart} = useContext(CartContext)
+    const {cart, enviarPedido} = useContext(CartContext)
     const [total, setTotal] = useState<number>(0)
 
     useEffect(()=> {
@@ -17,6 +17,10 @@ const Carrito: React.FC = () => {
 
         setTotal(newTotal)
     }, [cart])
+
+    const handleEnviarPedido = () =>{
+        enviarPedido()
+    }
 
     if (cart.length === 0) {
         return (
@@ -49,7 +53,7 @@ const Carrito: React.FC = () => {
                 <p>Total: ${total}</p>
             </div>
             <div className="w-full h-[50px] flex justify-center items-center my-5 ">
-                <Button width="w-[130px]" height="h-[40px]" text={"Enviar pedido"}/>
+                <Button handleClick={handleEnviarPedido} width="w-[130px]" height="h-[40px]" text={"Enviar pedido"} />
             </div>
         </section>
     );
