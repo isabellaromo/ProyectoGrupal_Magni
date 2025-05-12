@@ -1,6 +1,6 @@
 package org.example.controllers;
 
-import org.example.dtos.PedidoRequestDTO;
+import org.example.dtos.PedidoDTO;
 import org.example.services.PedidoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class PedidoController {
     }
 
     @PostMapping
-    public ResponseEntity<?> crearPedido (@RequestBody PedidoRequestDTO pedido){
+    public ResponseEntity<?> crearPedido (@RequestBody PedidoDTO pedido){
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(pedidoService.crearPedido(pedido));
         } catch (Exception e){

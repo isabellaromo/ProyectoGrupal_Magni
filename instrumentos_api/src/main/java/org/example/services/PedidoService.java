@@ -1,13 +1,12 @@
 package org.example.services;
 
-import org.example.dtos.PedidoRequestDTO;
+import org.example.dtos.PedidoDTO;
 import org.example.entities.Pedido;
 import org.example.entities.PedidoDetalle;
 import org.example.repositories.InstrumentoRepository;
 import org.example.repositories.PedidoRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -22,10 +21,11 @@ public class PedidoService {
     }
 
 
-    public Pedido crearPedido(PedidoRequestDTO pedido){
+    public Pedido crearPedido(PedidoDTO pedido){
 
         Pedido newPedido =  Pedido.builder()
-                .fechaPedido(LocalDate.now())
+                .fechaPedido(pedido.fechaPedido())
+                .totalPedido(pedido.totalPedido())
                 .build();
 
         List<PedidoDetalle> pedidoDetalleList = pedido.pedidoDetalle().stream().map(detalle ->{
@@ -38,7 +38,7 @@ public class PedidoService {
 
         newPedido.setPedidoDetalle(pedidoDetalleList);
 
-        newPedido.calcularTotal();
+        //newPedido.calcularTotal();
 
         return pedidoRepository.save(newPedido);
 

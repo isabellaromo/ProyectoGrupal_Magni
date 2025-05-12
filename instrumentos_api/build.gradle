@@ -45,10 +45,10 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     //H2 DATABASE
-    runtimeOnly 'com.h2database:h2'
+    //runtimeOnly 'com.h2database:h2'
 
     //Mysql DATABASE
-    //runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'com.mysql:mysql-connector-j'
 
     //MAPSTRUCT
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
