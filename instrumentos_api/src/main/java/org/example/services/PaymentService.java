@@ -1,13 +1,17 @@
 package org.example.services;
 
 import com.mercadopago.MercadoPagoConfig;
+import com.mercadopago.client.order.*;
 import com.mercadopago.client.preference.*;
+import com.mercadopago.core.MPRequestOptions;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
+import com.mercadopago.resources.order.Order;
 import com.mercadopago.resources.preference.Preference;
 import com.mercadopago.resources.preference.PreferenceBackUrls;
 import org.example.dtos.PedidoDTO;
 import org.example.dtos.PedidoDetalleRequestDTO;
+import org.example.dtos.PreferenceResponseDTO;
 import org.example.entities.Instrumento;
 import org.example.entities.Pedido;
 import org.example.entities.PedidoDetalle;
@@ -21,7 +25,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class PaymentService {
@@ -36,7 +42,7 @@ public class PaymentService {
         this.instrumentoRepository = instrumentoRepository;
     }
 
-    public String crearPedidoYPreferencia(PedidoDTO pedidoRequest) throws MPException, MPApiException {
+    public PreferenceResponseDTO crearPedidoYPreferencia(PedidoDTO pedidoRequest) throws MPException, MPApiException {
         // Inicializar SDK
         MercadoPagoConfig.setAccessToken(mercadoPagoAccessToken);
 
@@ -74,6 +80,7 @@ public class PaymentService {
 
 
         List<PreferenceItemRequest> items = pedidoGuardado.getPedidoDetalle().stream().map(detalle -> {
+            System.out.println("CANTIDAD: "+ detalle.getCantidad() + "PRECIO UNITARIO: " + detalle.getInstrumento().getPrecio());
             PreferenceItemRequest item = PreferenceItemRequest.builder()
                     .title(detalle.getInstrumento().getInstrumento())
                     .quantity(detalle.getCantidad())
@@ -101,9 +108,11 @@ public class PaymentService {
                 .externalReference(String.valueOf(pedidoGuardado.getId()))
                 .build();
 
+
         Preference preference = preferenceClient.create(preferenceRequest);
 
-        return preference.getId();
+        return new PreferenceResponseDTO(preference.getId(),pedidoGuardado.getId(),pedidoGuardado.getTotalPedido());
+
     }
 
     public void confirmarPedido(Long id){

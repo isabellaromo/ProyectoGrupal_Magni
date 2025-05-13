@@ -3,7 +3,6 @@ import { CartContextType } from "../types/cartContextType";
 import { Instrumento } from "../types/Instrumento";
 import { CartItemType } from "../types/CartItemType";
 import Swal from "sweetalert2";
-import { Pedido } from "../types/IPedido";
 
 export const CartContext = createContext<CartContextType>({
   cart: [],
@@ -12,9 +11,14 @@ export const CartContext = createContext<CartContextType>({
   clearCarrito: () => {},
   decreaseCarrito: () => {},
   enviarPedido: async () => {}, // agregado
+  pedidoId: null,
+  setPedidoId: () => {},
 });
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
+
+  const [pedidoId, setPedidoId] = useState<number | null>(null);
+
   const [cart, setCart] = useState<CartItemType[]>(() => {
     const storedCart = localStorage.getItem("cart");
     return storedCart ? JSON.parse(storedCart) : [];
@@ -104,6 +108,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       }
 
       const data = await response.json();
+      setPedidoId(data.id);
       clearCarrito();
       Swal.fire(
         "Compra realizada!",
@@ -124,6 +129,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         removeCarrito,
         clearCarrito,
         enviarPedido,
+        pedidoId,
+        setPedidoId,
       }}
     >
       {children}

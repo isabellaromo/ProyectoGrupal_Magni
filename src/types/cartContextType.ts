@@ -8,4 +8,6 @@ export interface CartContextType {
     clearCarrito: () => void,
     decreaseCarrito: (instrumentoId: number) => void,
     enviarPedido: () => Promise<void>;
+    pedidoId?: number | null;
+    setPedidoId?: (id: number | null) => void;
 }

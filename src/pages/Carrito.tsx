@@ -7,7 +7,7 @@ import { PaymentBrick } from "../components/PaymentBrick";
 
 const Carrito: React.FC = () => {
     const [toPay, setToPay] = useState(false)
-    const {cart, enviarPedido} = useContext(CartContext)
+    const {cart, enviarPedido,pedidoId } = useContext(CartContext)
     const [total, setTotal] = useState<number>(0)
 
     useEffect(()=> {
@@ -57,7 +57,7 @@ const Carrito: React.FC = () => {
                 <Button handleClick={handleEnviarPedido} width="w-[130px]" height="h-[40px]" text={"Pagar"} />
                 
             </div>
-            {toPay && <PaymentBrick detalles={[{instrumentoId:1, cantidad:2}]} pedidoId={2}/>}
+            {toPay && <PaymentBrick detalles={cart} />}
         </section>
     );
 }

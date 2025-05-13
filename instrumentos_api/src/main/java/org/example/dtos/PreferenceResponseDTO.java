@@ -1,4 +1,8 @@
 package org.example.dtos;
 
-public record PreferenceResponseDTO() {
-}
+public record PreferenceResponseDTO(
+        String preferenceId,
+        Long pedidoId,
+        Double totalPedido
+) {}
+

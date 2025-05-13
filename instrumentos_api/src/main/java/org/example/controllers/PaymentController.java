@@ -4,6 +4,7 @@ import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.preference.Preference;
 import org.example.dtos.PedidoDTO;
+import org.example.dtos.PreferenceResponseDTO;
 import org.example.services.PaymentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +26,9 @@ public class PaymentController {
     @PostMapping("/create-preference")
     public ResponseEntity<?> createPreference(@RequestBody PedidoDTO pedido) {
         try {
-            String preference = paymentService.crearPedidoYPreferencia(pedido);
-            Map<String, String> response = new HashMap<>();
-            response.put("preferenceId", preference);
-            return ResponseEntity.ok(response);
+            PreferenceResponseDTO preferenceResponseDTO = paymentService.crearPedidoYPreferencia(pedido);
+
+            return ResponseEntity.ok(preferenceResponseDTO);
         } catch (MPException | MPApiException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", e.getMessage()));
@@ -36,6 +36,11 @@ public class PaymentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", e.getMessage()));
         }
+    }
+
+    @GetMapping
+    public String hola(){
+        return "Hola";
     }
 
     @PostMapping("/confirmar/{id}")
