@@ -3,9 +3,10 @@ import { CartContext } from "../contexts/CartContext";
 import CartItem from "../common/CartItem";
 import Button from "../common/Button";
 import { CartItemType } from "../types/CartItemType";
+import { PaymentBrick } from "../components/PaymentBrick";
 
 const Carrito: React.FC = () => {
-
+    const [toPay, setToPay] = useState(false)
     const {cart, enviarPedido} = useContext(CartContext)
     const [total, setTotal] = useState<number>(0)
 
@@ -19,7 +20,7 @@ const Carrito: React.FC = () => {
     }, [cart])
 
     const handleEnviarPedido = () =>{
-        enviarPedido()
+        setToPay(true)
     }
 
     if (cart.length === 0) {
@@ -53,8 +54,10 @@ const Carrito: React.FC = () => {
                 <p>Total: ${total}</p>
             </div>
             <div className="w-full h-[50px] flex justify-center items-center my-5 ">
-                <Button handleClick={handleEnviarPedido} width="w-[130px]" height="h-[40px]" text={"Enviar pedido"} />
+                <Button handleClick={handleEnviarPedido} width="w-[130px]" height="h-[40px]" text={"Pagar"} />
+                
             </div>
+            {toPay && <PaymentBrick detalles={[{instrumentoId:1, cantidad:2}]} pedidoId={2}/>}
         </section>
     );
 }
