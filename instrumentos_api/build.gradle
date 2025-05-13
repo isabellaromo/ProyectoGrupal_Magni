@@ -58,6 +58,9 @@ dependencies {
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.1.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+    //MERCADOPAGO
+    implementation 'com.mercadopago:sdk-java:2.2.0'
+
 }
 
 tasks.named('test') {
