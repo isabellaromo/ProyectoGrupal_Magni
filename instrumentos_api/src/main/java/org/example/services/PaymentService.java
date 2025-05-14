@@ -24,10 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class PaymentService {
@@ -53,48 +50,68 @@ public class PaymentService {
                 .estadoPedido(EstadoPedido.PENDIENTE)
                 .build();
 
-        // double montoTotal = 0;
+        Set<Long> instrumentosContados = new HashSet<>();
+        double costoEnvios = 0.0;
 
-        // Crear los detalles y calcular el total
         for (PedidoDetalleRequestDTO detalle : pedidoRequest.pedidoDetalle()) {
             Instrumento instrumento = instrumentoRepository.findById(detalle.instrumentoId())
                     .orElseThrow(() -> new RuntimeException("Instrumento no encontrado"));
 
+            // Agregar detalle
             PedidoDetalle newDetalle = PedidoDetalle.builder()
                     .instrumento(instrumento)
                     .cantidad(detalle.cantidad())
                     .pedido(newPedido)
                     .build();
-
             newPedido.getPedidoDetalle().add(newDetalle);
+
+            // Calcular costo de envío solo una vez por instrumento
+            if (instrumentosContados.add(instrumento.getId())) {
+                String costoEnvioStr = instrumento.getCostoEnvio();
+                if (!"G".equalsIgnoreCase(costoEnvioStr)) {
+                    try {
+                        costoEnvios += Double.parseDouble(costoEnvioStr);
+                    } catch (NumberFormatException e) {
+                        throw new RuntimeException("Costo de envío inválido para instrumento ID " + instrumento.getId() + ": " + costoEnvioStr);
+                    }
+                }
+            }
         }
 
         newPedido.calcularTotal();
+        newPedido.setTotalPedido(newPedido.getTotalPedido() + costoEnvios);
 
-        // Guardar Pedido y Detalles en BD
+        // Guardar Pedido en BD
         Pedido pedidoGuardado = pedidoRepository.save(newPedido);
-
 
         // Crear preferencia de Mercado Pago
         PreferenceClient preferenceClient = new PreferenceClient();
 
+        // Crear lista de ítems de instrumentos
+        List<PreferenceItemRequest> items = pedidoGuardado.getPedidoDetalle().stream()
+                .map(detalle -> PreferenceItemRequest.builder()
+                        .title(detalle.getInstrumento().getInstrumento())
+                        .quantity(detalle.getCantidad())
+                        .unitPrice(BigDecimal.valueOf(detalle.getInstrumento().getPrecio()))
+                        .build())
+                .toList();
 
-        List<PreferenceItemRequest> items = pedidoGuardado.getPedidoDetalle().stream().map(detalle -> {
-            System.out.println("CANTIDAD: "+ detalle.getCantidad() + "PRECIO UNITARIO: " + detalle.getInstrumento().getPrecio());
-            PreferenceItemRequest item = PreferenceItemRequest.builder()
-                    .title(detalle.getInstrumento().getInstrumento())
-                    .quantity(detalle.getCantidad())
-                    .unitPrice(BigDecimal.valueOf(detalle.getInstrumento().getPrecio()))
+        // Si hay costo de envío, agregarlo como ítem adicional
+        List<PreferenceItemRequest> itemsConEnvio = new ArrayList<>(items);
+        if (costoEnvios > 0) {
+            PreferenceItemRequest envioItem = PreferenceItemRequest.builder()
+                    .title("Costo de Envío")
+                    .quantity(1)
+                    .unitPrice(BigDecimal.valueOf(costoEnvios))
                     .build();
-            return item;
-        }).toList();
+            itemsConEnvio.add(envioItem);
+        }
 
         PreferenceBackUrlsRequest preferenceBackUrls = PreferenceBackUrlsRequest.builder()
                 .success("https://youtube.com")
                 .pending("https://google.com")
                 .failure("https://github.com/JuanCruzRobledo")
                 .build();
-
 
         PreferencePayerRequest payer = PreferencePayerRequest.builder()
                 .name("Jorgito")
@@ -103,17 +120,16 @@ public class PaymentService {
 
         PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                 .payer(payer)
-                .items(items)
+                .items(itemsConEnvio) // Usamos la lista con envío incluido si aplica
                 .backUrls(preferenceBackUrls)
                 .externalReference(String.valueOf(pedidoGuardado.getId()))
                 .build();
 
-
         Preference preference = preferenceClient.create(preferenceRequest);
 
-        return new PreferenceResponseDTO(preference.getId(),pedidoGuardado.getId(),pedidoGuardado.getTotalPedido());
-
+        return new PreferenceResponseDTO(preference.getId(), pedidoGuardado.getId(), pedidoGuardado.getTotalPedido());
     }
+
 
     public void confirmarPedido(Long id){
 

@@ -7,8 +7,9 @@ import { PaymentBrick } from "../components/PaymentBrick";
 
 const Carrito: React.FC = () => {
     const [toPay, setToPay] = useState(false)
-    const {cart, enviarPedido,pedidoId } = useContext(CartContext)
+    const {cart} = useContext(CartContext)
     const [total, setTotal] = useState<number>(0)
+    console.log(cart)
 
     useEffect(()=> {
         const newTotal = cart.reduce((acc, item) => {
@@ -19,7 +20,7 @@ const Carrito: React.FC = () => {
         setTotal(newTotal)
     }, [cart])
 
-    const handleEnviarPedido = () =>{
+    const handlePay = () =>{
         setToPay(true)
     }
 
@@ -45,7 +46,7 @@ const Carrito: React.FC = () => {
                 <ul>
                     {cart.map((item: CartItemType) => (
                         <li key={item.instrumento.id} >
-                            <CartItem detalle={item}/>
+                            <CartItem detalle={item} toPay={toPay}/>
                         </li>
                     ))}
                 </ul>
@@ -53,11 +54,12 @@ const Carrito: React.FC = () => {
             <div className="w-full h-[50px] flex justify-center items-center mt-5 font-bold text-3xl">
                 <p>Total: ${total}</p>
             </div>
-            <div className="w-full h-[50px] flex justify-center items-center my-5 ">
-                <Button handleClick={handleEnviarPedido} width="w-[130px]" height="h-[40px]" text={"Pagar"} />
+            
+            {toPay ? <PaymentBrick /> : <div className="w-full h-[50px] flex justify-center items-center my-5 ">
+                <Button handleClick={handlePay} width="w-[130px]" height="h-[40px]" text={"Pagar"} />
                 
-            </div>
-            {toPay && <PaymentBrick detalles={cart} />}
+            </div>}
+            {toPay && <button className="w-max block px-4 rounded-md py-3 bg-[#E2AA11] cursor-pointer hover:bg-[#c9970e] transition-all mb-6 text-white font-semibold m-auto" onClick={()=>setToPay(false)}>Seguir Modificando el Carrito</button>}
         </section>
     );
 }

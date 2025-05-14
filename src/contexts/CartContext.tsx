@@ -3,6 +3,8 @@ import { CartContextType } from "../types/cartContextType";
 import { Instrumento } from "../types/Instrumento";
 import { CartItemType } from "../types/CartItemType";
 import Swal from "sweetalert2";
+import {Pedido} from '../types/IPedido'
+
 
 export const CartContext = createContext<CartContextType>({
   cart: [],
@@ -10,9 +12,10 @@ export const CartContext = createContext<CartContextType>({
   removeCarrito: () => {},
   clearCarrito: () => {},
   decreaseCarrito: () => {},
-  enviarPedido: async () => {}, // agregado
+  // enviarPedido: async () => {}, // agregado
   pedidoId: null,
   setPedidoId: () => {},
+  crearPedido: () => ({} as Pedido)
 });
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
@@ -78,10 +81,39 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setCart([]);
   };
 
-  const enviarPedido = async () => {
-    try {
-      // Armar el objeto Pedido con sus detalles
-      const pedido = {
+  // const enviarPedido = async () => {
+  //   try {
+  //     // Armar el objeto Pedido con sus detalles
+      
+  //     const pedido = crearPedido()
+  //     // Enviar al backend
+  //     const response = await fetch("http://localhost:8080/pedido", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(pedido),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error("Error al enviar el pedido");
+  //     }
+
+  //     const data = await response.json();
+  //     setPedidoId(data.id);
+  //     clearCarrito();
+  //     Swal.fire(
+  //       "Compra realizada!",
+  //       `El ID de tu pedido es: ${data.id}`,
+  //       "success"
+  //     );
+  //   } catch (error) {
+  //     console.error("Error al enviar el pedido:", error);
+  //   }
+  // };
+
+  const crearPedido = () =>{
+    const pedido = {
         id: null,
         fechaPedido: new Date().toISOString(), // o null si lo maneja el backend
         totalPedido: cart.reduce(
@@ -94,31 +126,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         })),
       };
 
-      // Enviar al backend
-      const response = await fetch("http://localhost:8080/pedido", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(pedido),
-      });
-
-      if (!response.ok) {
-        throw new Error("Error al enviar el pedido");
-      }
-
-      const data = await response.json();
-      setPedidoId(data.id);
-      clearCarrito();
-      Swal.fire(
-        "Compra realizada!",
-        `El ID de tu pedido es: ${data.id}`,
-        "success"
-      );
-    } catch (error) {
-      console.error("Error al enviar el pedido:", error);
-    }
-  };
+      return pedido
+  }
 
   return (
     <CartContext.Provider
@@ -128,7 +137,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         decreaseCarrito,
         removeCarrito,
         clearCarrito,
-        enviarPedido,
+        crearPedido,
         pedidoId,
         setPedidoId,
       }}

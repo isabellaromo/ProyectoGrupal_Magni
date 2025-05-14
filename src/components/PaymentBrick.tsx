@@ -2,28 +2,25 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { CartContext } from "../contexts/CartContext";
 import { CartItemType } from "../types/CartItemType";
 
-
-interface PaymentBrickProps {
-  detalles: CartItemType[]; 
-  pedidoId: number; // El ID generado del pedido
-}
-
 declare global {
   interface Window {
     MercadoPago: any;
   }
 }
 
-export const PaymentBrick: React.FC<PaymentBrickProps> = ({ detalles }) => {
+export const PaymentBrick = () => {
+  const { crearPedido} = useContext(CartContext)
   const brickContainerRef = useRef<HTMLDivElement>(null);
   const [isReady, setIsReady] = useState(false);
   const {setPedidoId} = useContext(CartContext)
-
+  const pedido = crearPedido()
+  
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://sdk.mercadopago.com/js/v2";
     script.onload = () => setIsReady(true);
     document.body.appendChild(script);
+    pedido.pedidoDetalle.map((el)=> console.log(el))
   }, []);
 
   useEffect(() => {
@@ -37,30 +34,32 @@ export const PaymentBrick: React.FC<PaymentBrickProps> = ({ detalles }) => {
         id: null,
         totalPedido: null,
         fechaPedido: null,
-        pedidoDetalle: detalles.map((item) => ({
+        pedidoDetalle: pedido.pedidoDetalle.map((item) => ({
+          
           cantidad: item.cantidad,
-          instrumentoId: item.instrumento.id,
+          instrumentoId: item.instrumentoId,
         })),
       };
+      console.log(pedidoDTO)
 
-      console.log("PedidoDTO", pedidoDTO);
       // 1. Crear preferencia en el backend
       const res = await fetch("http://localhost:8080/payment/create-preference", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(pedidoDTO),
       });
+      
       const {pedidoId, preferenceId, totalPedido} = await res.json();
       
-      // if (setPedidoId) {
-      //   setPedidoId(pedidoId);
-      // }
+      console.log(totalPedido)
+      if (setPedidoId) {
+        setPedidoId(pedidoId);
+      }
 
       //2. Renderizar Payment Brick
-      console.log('HOLA')
       const bricksBuilder = mp.bricks();
-      bricksBuilder.create("payment", "paymentBrickContainer", {
-        initialization: { amount: totalPedido ,preferenceId: preferenceId, redirectMode: 'modal' },
+      bricksBuilder.create("wallet", "paymentBrickContainer", {
+        initialization: { amount: totalPedido ,preferenceId: preferenceId },
         customization: {
           paymentMethods: {
           ticket: "all",
@@ -72,27 +71,27 @@ export const PaymentBrick: React.FC<PaymentBrickProps> = ({ detalles }) => {
         },
         callbacks: {
           onReady: () => console.log("Payment Brick listo"),
-          onError: (error: any) => {
+          onError: (error: unknown) => {
             console.error("Error en Payment Brick", error);
           },
           onPayment: async ({ payment }: any) => {
             const estado = payment.status;
+            console.log('ESTADO:', estado)
 
             if (estado === "approved") {
               await fetch(`http://localhost:8080/payment/aprobar/${pedidoId}`, { method: "POST" })
               alert("¡Pago aprobado!");
             } else if (estado === "rejected") {
-              await fetch(`http://localhost:8080/payment/rechazar/${pedidoId}`, { method: "POST" });
               alert("Pago rechazado");
+              await fetch(`http://localhost:8080/payment/rechazar/${pedidoId}`, { method: "POST" });
             }
           },
         },
       });
-      console.log('HOLA')
     };
 
     loadBrick();
   }, [isReady]);
 
-  return <div id="paymentBrickContainer" ref={brickContainerRef}></div>;
+  return <div className="w-max m-auto" id="paymentBrickContainer" ref={brickContainerRef}></div>;
 };

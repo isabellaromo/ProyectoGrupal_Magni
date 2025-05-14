@@ -31,6 +31,7 @@ public class Pedido {
         for (PedidoDetalle pedido : pedidoDetalle) {
             total += pedido.getInstrumento().getPrecio() * pedido.getCantidad();
         }
+
         this.totalPedido = total;
     }
 }
