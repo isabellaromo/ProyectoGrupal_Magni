@@ -9,31 +9,25 @@ declare global {
 }
 
 export const PaymentBrick = () => {
-  const { crearPedido, setPedidoId } = useContext(CartContext);
+  const { crearPedido} = useContext(CartContext)
   const brickContainerRef = useRef<HTMLDivElement>(null);
   const [isReady, setIsReady] = useState(false);
-
-  const pedido = crearPedido();
-
+  const {setPedidoId} = useContext(CartContext)
+  const pedido = crearPedido()
+  
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://sdk.mercadopago.com/js/v2";
-    script.onload = () => {
-      console.log("✅ SDK de Mercado Pago cargado");
-      setIsReady(true);
-    };
+    script.onload = () => setIsReady(true);
     document.body.appendChild(script);
-
-    console.log("📦 Pedido generado:");
-    pedido.pedidoDetalle.forEach((item) => console.log(item));
+    pedido.pedidoDetalle.map((el)=> console.log(el))
   }, []);
 
   useEffect(() => {
     if (!isReady || !brickContainerRef.current) return;
 
-    const mp = new window.MercadoPago("TEST-f649bc2e-7b2c-41b3-91e0-704c57f2697a", {
-      locale: "es-AR",
-    });
+    //Credenciales de produccion de la cuenta del vendedor
+    const mp = new window.MercadoPago("APP_USR-67fd5276-47b9-4393-8e42-fb936b3a1e0e", { locale: "es-AR" });
 
     const loadBrick = async () => {
       const pedidoDTO = {
@@ -41,89 +35,48 @@ export const PaymentBrick = () => {
         totalPedido: null,
         fechaPedido: null,
         pedidoDetalle: pedido.pedidoDetalle.map((item) => ({
+          
           cantidad: item.cantidad,
           instrumentoId: item.instrumentoId,
         })),
       };
+      console.log(pedidoDTO)
 
-      console.log("📨 Enviando pedido al backend:", pedidoDTO);
-
-      try {
-        const res = await fetch("http://localhost:8080/payment/create-preference", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(pedidoDTO),
-        });
-
-        if (!res.ok) throw new Error("Error al crear preferencia");
-
-        const { pedidoId, preferenceId, totalPedido } = await res.json();
-
-        console.log("✅ Preferencia creada:");
-        console.log("🆔 pedidoId:", pedidoId);
-        console.log("💵 totalPedido:", totalPedido);
-        console.log("🧾 preferenceId:", preferenceId);
-
-        if (setPedidoId) setPedidoId(pedidoId);
-
-        const bricksBuilder = mp.bricks();
-
-        console.log("🧱 Intentando renderizar Payment Brick");
-        console.log("➡️ Contenedor existe:", !!brickContainerRef.current);
-
-        await bricksBuilder.create("wallet", "paymentBrickContainer", {
-          initialization: {
-            amount: totalPedido,
-            preferenceId: preferenceId,
-            redirectMode: "modal", // podés probar con "blank" para testing
-          },
-          customization: {
-            paymentMethods: {
-              ticket: "all",
-              creditCard: "all",
-              prepaidCard: "all",
-              debitCard: "all",
-              mercadoPago: "all",
-            },
-          },
-          callbacks: {
-            onReady: () => {
-              console.log("✅ onReady: Payment Brick listo");
-            },
-            onPayment: async ({ payment }: any) => {
-              console.log("💰 onPayment ejecutado");
-              console.log("🧾 Payment info:", payment);
-              console.log("✅ payment_id:", payment.id);
-              console.log("🔁 status:", payment.status);
-
-              try {
-                await fetch(`http://localhost:8080/payment/confirmar`, {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    paymentId: payment.id,
-                    pedidoId: pedidoId,
-                  }),
-                });
-                console.log("📬 Confirmación enviada al backend");
-              } catch (error) {
-                console.error("❌ Error al confirmar el pago:", error);
-              }
-            },
-          },
-        });
-      } catch (error) {
-        console.error("❌ Error en loadBrick:", error);
+      // 1. Crear preferencia en el backend
+      const res = await fetch("http://localhost:8080/payment/create-preference", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(pedidoDTO),
+      });
+      
+      const {pedidoId, preferenceId, totalPedido} = await res.json();
+      
+      console.log(totalPedido)
+      if (setPedidoId) {
+        setPedidoId(pedidoId);
       }
+
+      //2. Renderizar Payment Brick
+      const bricksBuilder = mp.bricks();
+      bricksBuilder.create("wallet", "paymentBrickContainer", {
+        initialization: { amount: totalPedido ,preferenceId: preferenceId, redirectMode: 'modal' },
+        customization: {
+          paymentMethods: {
+          ticket: "all",
+          creditCard: "all",
+          prepaidCard: "all",
+          debitCard: "all",
+          mercadoPago: "all",
+        },
+        },
+        callbacks: {
+          onReady: () => console.log("Payment Brick listo")
+        },
+      });
     };
 
     loadBrick();
   }, [isReady]);
 
-  return (
-    <div className="w-max m-auto">
-      {/* Contenedor requerido por Mercado Pago */}
-      <div id="paymentBrickContainer" ref={brickContainerRef}></div>
-    </div>
-  );
+  return <div className="w-max m-auto" id="paymentBrickContainer" ref={brickContainerRef}></div>;
 };

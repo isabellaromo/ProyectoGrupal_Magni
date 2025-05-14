@@ -13,7 +13,7 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // permite todas las rutas
-                        .allowedOrigins("http://localhost:5173/") // permite todos los orígenes. Usá dominios específicos en prod.
+                        .allowedOrigins("*") // permite todos los orígenes. Usá dominios específicos en prod.
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*");
             }
