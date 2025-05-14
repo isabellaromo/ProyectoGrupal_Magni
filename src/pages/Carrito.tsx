@@ -3,13 +3,12 @@ import { CartContext } from "../contexts/CartContext";
 import CartItem from "../common/CartItem";
 import Button from "../common/Button";
 import { CartItemType } from "../types/CartItemType";
-import { PaymentBrick } from "../components/PaymentBrick";
+import { useNavigate } from "react-router-dom";
 
 const Carrito: React.FC = () => {
-    const [toPay, setToPay] = useState(false)
     const {cart} = useContext(CartContext)
     const [total, setTotal] = useState<number>(0)
-    console.log(cart)
+    const navigate = useNavigate()
 
     useEffect(()=> {
         const newTotal = cart.reduce((acc, item) => {
@@ -21,7 +20,7 @@ const Carrito: React.FC = () => {
     }, [cart])
 
     const handlePay = () =>{
-        setToPay(true)
+        navigate('/carrito/step2')
     }
 
     if (cart.length === 0) {
@@ -46,7 +45,7 @@ const Carrito: React.FC = () => {
                 <ul>
                     {cart.map((item: CartItemType) => (
                         <li key={item.instrumento.id} >
-                            <CartItem detalle={item} toPay={toPay}/>
+                            <CartItem detalle={item}/>
                         </li>
                     ))}
                 </ul>
@@ -55,12 +54,8 @@ const Carrito: React.FC = () => {
                 <p>Total: ${total}</p>
             </div>
             
-            {toPay ? <PaymentBrick /> : <div className="w-full h-[50px] flex justify-center items-center my-5 ">
-                <Button handleClick={handlePay} width="w-[130px]" height="h-[40px]" text={"Pagar"} />
-                
-            </div>}
-            {toPay && <button className="w-max block px-4 rounded-md py-3 bg-[#E2AA11] cursor-pointer hover:bg-[#c9970e] transition-all mb-6 text-white font-semibold m-auto" onClick={()=>setToPay(false)}>Seguir Modificando el Carrito</button>}
-        </section>
+            <Button handleClick={handlePay} width="w-[130px]" height="h-[40px]" text={"Pagar"} />
+             </section>
     );
 }
 

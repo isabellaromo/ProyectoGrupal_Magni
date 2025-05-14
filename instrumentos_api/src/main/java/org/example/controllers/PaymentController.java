@@ -54,7 +54,7 @@ public class PaymentController {
         }
     }
 
-    @PostMapping("/rechazar/{id}")
+    @GetMapping("/rechazar/{id}")
     public ResponseEntity<?> rechazarPago(@PathVariable Long id ) {
         try {
             paymentService.rechazarPedido(id);

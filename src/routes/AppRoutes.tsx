@@ -5,6 +5,7 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import AdminInstruments from '../pages/AdminInstruments'
 import Carrito from '../pages/Carrito'
+import { CarritoStepTwo } from '../pages/CarritoStepTwo'
 
 const AppRoutes = () => {
   return (
@@ -16,6 +17,7 @@ const AppRoutes = () => {
             <Route path="/detalle/:id" element={<Detalle />} />
             <Route path="/admin/instrumentos" element={<AdminInstruments />} />
             <Route path="/carrito" element={<Carrito />} />
+            <Route path="/carrito/step2" element={<CarritoStepTwo />} />
         </Routes>
             </main>
       <Footer />

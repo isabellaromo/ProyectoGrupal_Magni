@@ -108,9 +108,9 @@ public class PaymentService {
         }
 
         PreferenceBackUrlsRequest preferenceBackUrls = PreferenceBackUrlsRequest.builder()
-                .success("https://youtube.com")
+                .failure("http://localhost:8080/payment/confirmar/" + String.valueOf(pedidoGuardado.getId()))
                 .pending("https://google.com")
-                .failure("https://github.com/JuanCruzRobledo")
+                .success("http://localhost:8080/payment/rechazar/" + String.valueOf(pedidoGuardado.getId()))
                 .build();
 
         PreferencePayerRequest payer = PreferencePayerRequest.builder()

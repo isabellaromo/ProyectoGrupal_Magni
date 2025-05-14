@@ -26,7 +26,7 @@ export const PaymentBrick = () => {
   useEffect(() => {
     if (!isReady || !brickContainerRef.current) return;
 
-    const mp = new window.MercadoPago("TEST-97bdf431-9b81-4ec0-964b-0b49be595d23", { locale: "es-AR" });
+    const mp = new window.MercadoPago("TEST-f649bc2e-7b2c-41b3-91e0-704c57f2697a", { locale: "es-AR" });
 
     const loadBrick = async () => {
 
@@ -59,7 +59,7 @@ export const PaymentBrick = () => {
       //2. Renderizar Payment Brick
       const bricksBuilder = mp.bricks();
       bricksBuilder.create("wallet", "paymentBrickContainer", {
-        initialization: { amount: totalPedido ,preferenceId: preferenceId },
+        initialization: { amount: totalPedido ,preferenceId: preferenceId, redirectMode: 'modal' },
         customization: {
           paymentMethods: {
           ticket: "all",
@@ -70,22 +70,7 @@ export const PaymentBrick = () => {
         },
         },
         callbacks: {
-          onReady: () => console.log("Payment Brick listo"),
-          onError: (error: unknown) => {
-            console.error("Error en Payment Brick", error);
-          },
-          onPayment: async ({ payment }: any) => {
-            const estado = payment.status;
-            console.log('ESTADO:', estado)
-
-            if (estado === "approved") {
-              await fetch(`http://localhost:8080/payment/aprobar/${pedidoId}`, { method: "POST" })
-              alert("¡Pago aprobado!");
-            } else if (estado === "rejected") {
-              alert("Pago rechazado");
-              await fetch(`http://localhost:8080/payment/rechazar/${pedidoId}`, { method: "POST" });
-            }
-          },
+          onReady: () => console.log("Payment Brick listo")
         },
       });
     };

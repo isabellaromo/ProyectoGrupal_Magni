@@ -6,7 +6,7 @@ import { CartContext } from "../contexts/CartContext"
 import { FaTrash } from "react-icons/fa";
 
 
-const CartItem = ({detalle, toPay}: {detalle: CartItemType, toPay: boolean}) => {
+const CartItem = ({detalle}: {detalle: CartItemType}) => {
 
     const {decreaseCarrito, addCarrito, removeCarrito} = useContext(CartContext)
 
@@ -18,15 +18,14 @@ const CartItem = ({detalle, toPay}: {detalle: CartItemType, toPay: boolean}) => 
             <h3 className="text-md text-gray-800 font-light">{detalle.instrumento.instrumento}</h3>
           </div>
           <div className="flex gap-4 items-center border-1 border-gray-300 rounded-lg">
-            {!toPay && <Button
+            <Button
               handleClick={() => decreaseCarrito(detalle.instrumento.id)}
               text="-"
               width="w-[30px]"
               height="h-[30px]"
               bgColor="bg-[#E2AA11]"
-              hoverColor="bg-[#e27d11]"/>}
+              hoverColor="bg-[#e27d11]"/>
               <p className="min-w-8 text-center">{detalle.cantidad}</p>
-              {!toPay && 
               <Button
                 handleClick={() => addCarrito(detalle.instrumento)}
                 text="+"
@@ -34,18 +33,16 @@ const CartItem = ({detalle, toPay}: {detalle: CartItemType, toPay: boolean}) => 
                 height="h-[30px]"
                 bgColor="bg-[#E2AA11]"
                 hoverColor="bg-[#e27d11]"/>
-              }
           </div>
 
           <div>
-            {!toPay &&
           <Button
               handleClick={() => removeCarrito(detalle.instrumento.id)}
               text={<FaTrash/>}
               width="w-[30px]"
               height="h-[30px]"
               bgColor="bg-red-500"
-              hoverColor="bg-red-800"/> }
+              hoverColor="bg-red-800"/> 
           </div>
 
           <div className="h-full border-l-1 border-[#E2AA11] p-2 text-right">
