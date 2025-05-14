@@ -26,7 +26,7 @@ public class Pedido {
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<PedidoDetalle> pedidoDetalle;
 
-    public void calcularTotal (){
+    public void calcularTotal (double costoEnvio){
         double total = 0.0;
         for (PedidoDetalle pedido : pedidoDetalle) {
             total += pedido.getInstrumento().getPrecio() * pedido.getCantidad();

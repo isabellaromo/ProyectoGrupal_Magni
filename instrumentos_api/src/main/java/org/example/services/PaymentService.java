@@ -2,11 +2,15 @@ package org.example.services;
 
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.order.*;
+import com.mercadopago.client.payment.PaymentClient;
 import com.mercadopago.client.preference.*;
 import com.mercadopago.core.MPRequestOptions;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.order.Order;
+import com.mercadopago.resources.payment.Payment;
+import com.mercadopago.resources.payment.PaymentData;
+import com.mercadopago.resources.payment.PaymentOrder;
 import com.mercadopago.resources.preference.Preference;
 import com.mercadopago.resources.preference.PreferenceBackUrls;
 import org.example.dtos.PedidoDTO;
@@ -78,8 +82,7 @@ public class PaymentService {
             }
         }
 
-        newPedido.calcularTotal();
-        newPedido.setTotalPedido(newPedido.getTotalPedido() + costoEnvios);
+        newPedido.calcularTotal(costoEnvios);
 
         // Guardar Pedido en BD
         Pedido pedidoGuardado = pedidoRepository.save(newPedido);
@@ -131,23 +134,37 @@ public class PaymentService {
     }
 
 
-    public void confirmarPedido(Long id){
+    public String confirmarPedido(Map<String, Object> data) throws MPException, MPApiException {
 
-        Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
-        pedido.setEstadoPedido(EstadoPedido.APROBADO);
+        Long paymentId = Long.valueOf(data.get("paymentId").toString());
+        Long pedidoId = Long.valueOf(data.get("pedidoId").toString());
 
-        pedidoRepository.save(pedido);
+        MercadoPagoConfig.setAccessToken(mercadoPagoAccessToken);
 
+        PaymentClient paymentClient = new PaymentClient();
+        Payment payment = paymentClient.get(paymentId);
+
+        String status = payment.getStatus();
+
+        if ("approved".equals(status)) {
+            Pedido pedido = pedidoRepository.findById(pedidoId).orElseThrow();
+            pedido.setEstadoPedido(EstadoPedido.APROBADO);
+            pedidoRepository.save(pedido);
+            return "Pago aprobado y pedido actualizado";
+
+        } else if ("rejected".equals(status) || "cancelled".equals(status) || "expired".equals(status)) {
+            rechazarPedido(pedidoId);
+            return "Pago rechazado. Estado: " + status;
+
+        } else {
+            return "Pago pendiente u otro estado. Estado: " + status;
+        }
     }
 
-    public void rechazarPedido(Long id){
-
+    public void rechazarPedido(Long id) {
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
         pedido.setEstadoPedido(EstadoPedido.RECHAZADO);
-
         pedidoRepository.save(pedido);
-
     }
 }

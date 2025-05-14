@@ -38,30 +38,14 @@ public class PaymentController {
         }
     }
 
-    @GetMapping
-    public String hola(){
-        return "Hola";
-    }
-
-    @PostMapping("/confirmar/{id}")
-    public ResponseEntity<?> confirmarPago(@PathVariable Long id ) {
+    @PostMapping("/confirmar")
+    public ResponseEntity<?> confirmarPago(@RequestBody Map<String, Object> data)  {
         try {
-            paymentService.confirmarPedido(id);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.status(HttpStatus.OK).body(paymentService.confirmarPedido(data));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", e.getMessage()));
         }
     }
 
-    @GetMapping("/rechazar/{id}")
-    public ResponseEntity<?> rechazarPago(@PathVariable Long id ) {
-        try {
-            paymentService.rechazarPedido(id);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", e.getMessage()));
-        }
-    }
 }
