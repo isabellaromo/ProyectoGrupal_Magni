@@ -59,7 +59,7 @@ export const PaymentBrick = () => {
       //2. Renderizar Payment Brick
       const bricksBuilder = mp.bricks();
       bricksBuilder.create("wallet", "paymentBrickContainer", {
-        initialization: { amount: totalPedido ,preferenceId: preferenceId, redirectMode: 'modal' },
+        initialization: { amount: totalPedido ,preferenceId: preferenceId },
         customization: {
           paymentMethods: {
           ticket: "all",
@@ -70,7 +70,7 @@ export const PaymentBrick = () => {
         },
         },
         callbacks: {
-          onReady: () => console.log("Payment Brick listo")
+          onReady: () => console.log("Payment Brick listo"),
         },
       });
     };

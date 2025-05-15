@@ -9,6 +9,7 @@ import org.example.services.PaymentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,39 +38,50 @@ public class PaymentController {
         }
     }
 
-    @PostMapping("/confirmar")
-    public ResponseEntity<?> confirmarPago(@RequestBody Map<String, Object> data) {
-        try {
-            System.out.println("SE ESTA POR CONFIRMAR EL FOKIN PEDIDO");
-            return ResponseEntity.status(HttpStatus.OK).body(paymentService.confirmarPedido(data));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", e.getMessage()));
-        }
-    }
-
     @PostMapping("/webhook")
     public ResponseEntity<String> recibirWebhook(@RequestBody Map<String, Object> body) {
         try {
-            System.out.println("🟢 Webhook recibido: " + body);
-
+            System.out.println("Webhook recibido: " + body);
             String type = (String) body.get("type");
             Map<String, Object> data = (Map<String, Object>) body.get("data");
 
             if (type != null && type.equals("payment") && data != null && data.get("id") != null) {
                 Long paymentId = Long.valueOf(data.get("id").toString());
-                System.out.println("🔄 Procesando pago con ID: " + paymentId);
+                System.out.println("Procesando pago con ID: " + paymentId);
                 paymentService.procesarPago(paymentId);
             } else {
-                System.out.println("⚠️ Webhook recibido sin 'type=payment' o sin 'data.id'");
+                System.out.println("Webhook recibido sin 'type=payment' o sin 'data.id'");
             }
 
             return ResponseEntity.ok("Webhook procesado correctamente");
 
         } catch (Exception e) {
-            System.out.println("❌ Error al procesar el webhook");
+            System.out.println("Error al procesar el webhook");
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al procesar el webhook");
         }
+    }
+
+    @GetMapping("/rechazar/{id}")
+    public RedirectView rechazarPedido(
+            @PathVariable Long id,
+            @RequestParam Map<String, String> params
+    ) {
+        System.out.println("Pago rechazado para el pedido ID: " + id);
+        System.out.println("Parámetros recibidos: " + params);
+
+        paymentService.rechazarPedido(id);
+        return new RedirectView("http://localhost:5173/rechazado");
+    }
+
+    @GetMapping("/aprobar/{id}")
+    public RedirectView aprobarPedido(
+            @PathVariable Long id,
+            @RequestParam Map<String, String> params
+    ) {
+        System.out.println("Pago aprobado para el pedido ID: " + id);
+        System.out.println("Parámetros recibidos: " + params);
+
+        return new RedirectView("http://localhost:5173/aprobado/"+id);
     }
 }

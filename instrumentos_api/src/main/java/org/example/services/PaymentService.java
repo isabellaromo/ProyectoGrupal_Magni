@@ -27,6 +27,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.Map;
 
@@ -114,9 +116,9 @@ public class PaymentService {
         }
 
         PreferenceBackUrlsRequest preferenceBackUrls = PreferenceBackUrlsRequest.builder()
-                .failure("http://localhost:8080/payment/confirmar/" + String.valueOf(pedidoGuardado.getId()))
+                .failure(urlNgrok+"/payment/rechazar/" + String.valueOf(pedidoGuardado.getId()))
                 .pending("https://google.com")
-                .success("http://localhost:8080/payment/rechazar/" + String.valueOf(pedidoGuardado.getId()))
+                .success(urlNgrok+"/payment/aprobar/" + String.valueOf(pedidoGuardado.getId()))
                 .build();
 
         PreferencePayerRequest payer = PreferencePayerRequest.builder()
@@ -126,9 +128,10 @@ public class PaymentService {
 
         PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                 .payer(payer)
-                .notificationUrl("https://db92-38-51-31-214.ngrok-free.app/payment/webhook")
+                .notificationUrl(urlNgrok+"/payment/webhook")
                 .items(itemsConEnvio) // Usamos la lista con envío incluido si aplica
                 .backUrls(preferenceBackUrls)
+                .dateOfExpiration(OffsetDateTime.now(ZoneOffset.UTC).plusMinutes(10)) //Borrar si no anda
                 .externalReference(String.valueOf(pedidoGuardado.getId()))
                 .build();
 
@@ -137,42 +140,6 @@ public class PaymentService {
         return new PreferenceResponseDTO(preference.getId(), pedidoGuardado.getId(), pedidoGuardado.getTotalPedido());
     }
 
-
-    public String confirmarPedido(Map<String, Object> data) throws MPException, MPApiException {
-
-        Long paymentId = Long.valueOf(data.get("paymentId").toString());
-        Long pedidoId = Long.valueOf(data.get("pedidoId").toString());
-
-        MercadoPagoConfig.setAccessToken(mercadoPagoAccessToken);
-
-        PaymentClient paymentClient = new PaymentClient();
-        Payment payment = paymentClient.get(paymentId);
-
-        String status = payment.getStatus();
-
-        if ("approved".equals(status)) {
-            Pedido pedido = pedidoRepository.findById(pedidoId).orElseThrow();
-            pedido.setEstadoPedido(EstadoPedido.APROBADO);
-            pedidoRepository.save(pedido);
-            System.out.println("SE CONFIRMO EL FOKIN PEDIDO");
-            return "Pago aprobado y pedido actualizado";
-
-        } else if ("rejected".equals(status) || "cancelled".equals(status) || "expired".equals(status)) {
-            rechazarPedido(pedidoId);
-            System.out.println("SE RECHAZO EL FOKIN PEDIDO");
-            return "Pago rechazado. Estado: " + status;
-
-        } else {
-            return "Pago pendiente u otro estado. Estado: " + status;
-        }
-    }
-
-    public void rechazarPedido(Long id) {
-        Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
-        pedido.setEstadoPedido(EstadoPedido.RECHAZADO);
-        pedidoRepository.save(pedido);
-    }
 
     public void procesarPago(Long paymentId) {
         try {
@@ -186,8 +153,8 @@ public class PaymentService {
             String status = payment.getStatus();
             String externalReference = payment.getExternalReference();
 
-            System.out.println("📦 Estado del pago: " + status);
-            System.out.println("📦 Referencia externa: " + externalReference);
+            System.out.println("Estado del pago: " + status);
+            System.out.println("Referencia externa: " + externalReference);
 
             if (externalReference == null) return;
 
@@ -199,20 +166,27 @@ public class PaymentService {
             if ("approved".equals(status)) {
                 pedido.setEstadoPedido(EstadoPedido.APROBADO);
             } else if ("rejected".equals(status)) {
-                pedido.setEstadoPedido(EstadoPedido.RECHAZADO); // <- Corregí esto, antes ponías APROBADO en ambos casos
+                pedido.setEstadoPedido(EstadoPedido.RECHAZADO);
             }
 
             pedidoRepository.save(pedido);
-            System.out.println("✅ Pedido actualizado y guardado");
+            System.out.println("Pedido actualizado y guardado");
 
         } catch (MPApiException e) {
-            System.out.println("❌ Error de la API de Mercado Pago:");
+            System.out.println("Error de la API de Mercado Pago:");
             System.out.println("Respuesta: " + e.getApiResponse().getContent());
             e.printStackTrace();
         } catch (Exception e) {
-            System.out.println("❌ Error general al procesar el pago:");
+            System.out.println("Error general al procesar el pago:");
             e.printStackTrace();
         }
+    }
+
+    public void rechazarPedido(Long id) {
+        Pedido pedido = pedidoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+        pedido.setEstadoPedido(EstadoPedido.RECHAZADO);
+        pedidoRepository.save(pedido);
     }
 
 
