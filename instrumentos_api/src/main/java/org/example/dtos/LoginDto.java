@@ -1,4 +1,4 @@
 package org.example.dtos;
 
-public enum LoginDto {
+public record LoginDto (String nombreUsuario, String clave) {
 }

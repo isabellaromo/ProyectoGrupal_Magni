@@ -1,4 +1,3 @@
 package org.example.dtos;
 
-public record RegistroDto() {
-}
+public record RegistroDto(String nombreUsuario, String clave, String rol) { }

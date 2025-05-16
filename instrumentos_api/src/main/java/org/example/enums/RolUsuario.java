@@ -1,4 +1,5 @@
 package org.example.enums;
 
-public record RolUsuario() {
+public enum RolUsuario {
+    Admin, Operador, Visor
 }
