@@ -71,7 +71,7 @@ public class PaymentController {
         System.out.println("Parámetros recibidos: " + params);
 
         paymentService.rechazarPedido(id);
-        return new RedirectView("http://localhost:5173/rechazado");
+        return new RedirectView("http://localhost:5173/pago-rechazado");
     }
 
     @GetMapping("/aprobar/{id}")
@@ -82,6 +82,6 @@ public class PaymentController {
         System.out.println("Pago aprobado para el pedido ID: " + id);
         System.out.println("Parámetros recibidos: " + params);
 
-        return new RedirectView("http://localhost:5173/aprobado/"+id);
+        return new RedirectView("http://localhost:5173/pago-aprobado/"+id);
     }
 }

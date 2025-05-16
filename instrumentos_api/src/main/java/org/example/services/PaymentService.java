@@ -131,6 +131,7 @@ public class PaymentService {
                 .notificationUrl(urlNgrok+"/payment/webhook")
                 .items(itemsConEnvio) // Usamos la lista con envío incluido si aplica
                 .backUrls(preferenceBackUrls)
+                .autoReturn("approved")
                 .dateOfExpiration(OffsetDateTime.now(ZoneOffset.UTC).plusMinutes(10)) //Borrar si no anda
                 .externalReference(String.valueOf(pedidoGuardado.getId()))
                 .build();
