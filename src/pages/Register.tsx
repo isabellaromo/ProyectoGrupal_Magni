@@ -1,175 +1,137 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/';
-import { Input } from './ui/input';
-import { Button } from './ui/button';
-import { useToast } from '../hooks/use-toast';
-import { Select } from './ui/select';
+import { Formik, Form, Field, ErrorMessage } from 'formik'
+import * as Yup from 'yup'
+import axios from 'axios'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
-const Register: React.FC = () => {
-  const [nombreUsuario, setNombreUsuario] = useState('');
-  const [clave, setClave] = useState('');
-  const [confirmarClave, setConfirmarClave] = useState('');
-  const [rol, setRol] = useState('Visor');
-  const [isLoading, setIsLoading] = useState(false);
-  
-  const { authState, register } = useAuth();
-  const { isAuthenticated } = authState;
-  const navigate = useNavigate();
-  const { toast } = useToast();
+interface Response {
+  rol: string
+  mensaje?: string
+  id: number
+  nombreUsuario: string
+}
 
-  // Usamos useEffect para controlar la redirección tras cambios en el estado de autenticación
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/');
-    }
-  }, [isAuthenticated, navigate]);
+const registerSchema = Yup.object().shape({
+  nombreUsuario: Yup.string().required('Requerido'),
+  clave: Yup.string().required('Requerido'),
+  rol: Yup.string().oneOf(['Admin', 'Operador', 'Visor']).required('Requerido'),
+})
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!nombreUsuario || !clave || !confirmarClave) {
-      toast({
-        title: 'Error',
-        description: 'Por favor, completa todos los campos',
-        variant: 'destructive',
-      });
-      return;
-    }
+const Register = () => {
+  const redirect = useNavigate()
+  const [error, setError] = useState<string | null>(null)
 
-    if (clave !== confirmarClave) {
-      toast({
-        title: 'Error',
-        description: 'Las contraseñas no coinciden',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    setIsLoading(true);
-    
+  const handleSubmit = async (values: {
+    nombreUsuario: string
+    clave: string
+    rol: string
+  }) => {
+    console.log(values)
     try {
-      await register(nombreUsuario, clave, rol);
-      toast({
-        title: 'Registro exitoso',
-        description: '¡Bienvenido a Music Elements!',
-      });
-    } catch (error: any) {
-      toast({
-        title: 'Error de registro',
-        description: error.message || 'No se pudo completar el registro',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsLoading(false);
+      const response = await axios.post(
+        'http://localhost:8080/api/usuarios/register',
+        values
+      )
+
+      const data = response.data as Response
+
+      if (response.status === 201) {
+        alert(response.data.mensaje)
+        delete data.mensaje
+        redirect('/login')
+      }
+      if (response.status !== 200) {
+        throw new Error(JSON.stringify(response.data))
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(`Error al intentar registrarse. Error: ${error}`)
+      }
     }
-  };
+  }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-lg">
-        <div className="text-center">
-          <h1 className="text-3xl font-extrabold text-gray-900">Music Elements</h1>
-          <h2 className="mt-2 text-xl font-semibold text-gray-700">Crear Cuenta</h2>
-        </div>
+    <div className="w-max mx-auto mt-10 p-6 bg-gray-600 rounded-xl shadow-2xl shadow-black/70 self-center place-self-center">
+      <h2 className="text-4xl font-semibold mb-4 text-white">Registrarse</h2>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="nombreUsuario" className="block text-sm font-medium text-gray-700">
-                Nombre de Usuario
-              </label>
-              <Input
-                id="nombreUsuario"
+      <div className="flex flex-col items-center gap-3">
+        <img
+          src="../../public/img/authImage.webp"
+          className="max-w-[350px] rounded-2xl"
+        />
+        <Formik
+          initialValues={{ nombreUsuario: '', clave: '', rol: 'Operador' }}
+          validationSchema={registerSchema}
+          onSubmit={handleSubmit}
+        >
+          <>
+            <Form className="flex flex-col gap-2 w-full">
+              <Field
                 name="nombreUsuario"
-                type="text"
-                autoComplete="username"
-                required
-                value={nombreUsuario}
-                onChange={(e) => setNombreUsuario(e.target.value)}
-                className="mt-1"
-                placeholder="Ingresa tu nombre de usuario"
-                disabled={isLoading}
+                placeholder="Nombre de usuario"
+                className="text-white border border-white rounded-2xl outline-0 p-3"
               />
-            </div>
+              <ErrorMessage
+                name="nombreUsuario"
+                component="div"
+                className="text-red-500 font-semibold text-center"
+              />
 
-            <div>
-              <label htmlFor="clave" className="block text-sm font-medium text-gray-700">
-                Contraseña
-              </label>
-              <Input
-                id="clave"
+              <Field
                 name="clave"
                 type="password"
-                autoComplete="new-password"
-                required
-                value={clave}
-                onChange={(e) => setClave(e.target.value)}
-                className="mt-1"
-                placeholder="Ingresa tu contraseña"
-                disabled={isLoading}
+                placeholder="Clave"
+                className="text-white border border-white rounded-2xl outline-0 p-3"
               />
-            </div>
-
-            <div>
-              <label htmlFor="confirmarClave" className="block text-sm font-medium text-gray-700">
-                Confirmar Contraseña
-              </label>
-              <Input
-                id="confirmarClave"
-                name="confirmarClave"
-                type="password"
-                autoComplete="new-password"
-                required
-                value={confirmarClave}
-                onChange={(e) => setConfirmarClave(e.target.value)}
-                className="mt-1"
-                placeholder="Confirma tu contraseña"
-                disabled={isLoading}
+              <ErrorMessage
+                name="clave"
+                component="div"
+                className="text-red-500 font-semibold text-center"
               />
-            </div>
 
-            <div>
-              <label htmlFor="rol" className="block text-sm font-medium text-gray-700">
-                Rol
-              </label>
-              <select
-                id="rol"
+              <Field
                 name="rol"
-                value={rol}
-                onChange={(e) => setRol(e.target.value)}
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                disabled={isLoading}
+                as="select"
+                className="text-white border border-white rounded-2xl outline-0 p-3"
               >
-                <option value="Visor">Visor</option>
-                <option value="Operador">Operador</option>
-                <option value="Admin">Admin</option>
-              </select>
-            </div>
-          </div>
+                <option className="text-black" value="Operador">
+                  Operador
+                </option>
+                <option className="text-black" value="Visor">
+                  Visor
+                </option>
+                <option className="text-black" value="Admin">
+                  Admin
+                </option>
+              </Field>
+              <ErrorMessage
+                name="rol"
+                component="div"
+                className="text-red-500 font-semibold text-center"
+              />
 
-          <div>
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Registrando...' : 'Registrarse'}
-            </Button>
-          </div>
-          
-          <div className="text-center mt-4">
-            <p className="text-sm text-gray-600">
-              ¿Ya tienes una cuenta?{" "}
-              <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
-                Inicia sesión
-              </Link>
-            </p>
-          </div>
-        </form>
+              <button
+                type="submit"
+                className="bg-[#E2AA11] px-3 py-2 rounded-2xl text-center text-white hover:bg-[#b6890d] transition-colors cursor-pointer"
+              >
+                Registrarse
+              </button>
+              {error && <p className="text-red-500 mt-2">{error}</p>}
+            </Form>
+          </>
+        </Formik>
+        <p className="text-center text-white">
+          ¿Ya tienes cuenta?{' '}
+          <Link
+            to={'/login'}
+            className="cursor-pointer underline text-[#E2AA11]"
+          >
+            Iniciar Sesion
+          </Link>
+        </p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Register;
+export default Register

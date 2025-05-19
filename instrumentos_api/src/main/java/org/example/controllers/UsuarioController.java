@@ -39,7 +39,7 @@ public class UsuarioController {
                 );
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<?> registrar(@RequestBody RegistroDto dto) {
         // aquí podrías validar dto
         if (dto.nombreUsuario().isBlank() || dto.clave().isBlank()) {
