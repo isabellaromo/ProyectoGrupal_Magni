@@ -30,6 +30,7 @@ const Detalle: React.FC = () => {
   return (
     <div className="w-[100%] flex justify-center">
     <p className="m-8"><Link to={"/"} className="text-[#E2AA11] text-2xl font-bold" > ← Inicio</Link></p>
+    <button className="p-6 bg-[#E2AA11] h-3 flex items-center rounded-3xl text-white font-bold text-xl self-end cursor-pointer hover:bg-gray-700 m-4">Exportar en PDF</button>
     <div className='w-[60%] h-[95vh] flex self-center items-center justify-center justify-self-center'>
         <div className='w-[70%] h-[60%] flex flex-col justify-center items-center p-12 shadow-md'>
             <img src={item.imagen} alt={item.imagen} className="w-[60%] mb-5" />

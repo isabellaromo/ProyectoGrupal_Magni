@@ -5,6 +5,7 @@ import org.example.entities.Instrumento;
 import org.example.enums.Category;
 import org.example.repositories.CategoriaInstrumentoRepository;
 import org.example.repositories.InstrumentoRepository;
+import org.example.repositories.PedidoRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,7 +24,8 @@ public class Main {
     @Bean
     public CommandLineRunner loadData(
             CategoriaInstrumentoRepository categoriaRepo,
-            InstrumentoRepository instrumentoRepo
+            InstrumentoRepository instrumentoRepo,
+            PedidoRepository pedidoRepository
     ) {
         return args -> {
             // Crear categorías

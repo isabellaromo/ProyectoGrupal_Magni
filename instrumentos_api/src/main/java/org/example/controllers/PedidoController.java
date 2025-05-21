@@ -1,10 +1,13 @@
 package org.example.controllers;
 
 import org.example.dtos.PedidoDTO;
+import org.example.dtos.PedidoMensualDto;
 import org.example.services.PedidoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -24,5 +27,19 @@ public class PedidoController {
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
         }
+    }
+    @GetMapping
+    public ResponseEntity<?> obtenerTodosLosPedidos() {
+        try {
+            return ResponseEntity.ok(pedidoService.obtenerTodosLosPedidos());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/mensuales")
+    public ResponseEntity<List<PedidoMensualDto>> obtenerTotalesPorMes() {
+        List<PedidoMensualDto> totales = pedidoService.obtenerTotalesPorMes();
+        return ResponseEntity.ok(totales);
     }
 }

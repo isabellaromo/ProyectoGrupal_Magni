@@ -1,18 +1,18 @@
 import { Navigate, Outlet } from 'react-router-dom'
 import { authStore } from '../contexts/authStore'
 
-const AuthGuard = () => {
+interface AuthGuardProps {
+  children: React.ReactNode
+}
+
+const AuthGuard = ({ children }: AuthGuardProps) => {
   const user = authStore(state => state.usuario)
 
   if (!user) {
     return <Navigate to="/login" />
   }
 
-  if (user.rol !== 'Admin') {
-    return <Navigate to="/" />
-  }
-
-  return <Outlet />
+  return <>{children || <Outlet />}</>
 }
 
 export default AuthGuard

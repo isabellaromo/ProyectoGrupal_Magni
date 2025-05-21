@@ -1,9 +1,9 @@
 import { IoMdAdd } from 'react-icons/io'
-import InstrumentsTable from '../components/InstrumentsTable'
-import { useModalContext } from '../contexts/ModalContext'
-import CreateInstrument from '../components/CreateInstrument'
-import { useDataContext } from '../contexts/DataContext'
-import fetchHelper from '../helpers/fetchHelper'
+import InstrumentsTable from '../../components/InstrumentsTable'
+import { useModalContext } from '../../contexts/ModalContext'
+import CreateInstrument from '../../components/CreateInstrument'
+import { useDataContext } from '../../contexts/DataContext'
+import fetchHelper from '../../helpers/fetchHelper'
 
 const AdminInstruments = () => {
   const { openModal } = useModalContext()
