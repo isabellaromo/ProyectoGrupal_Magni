@@ -104,7 +104,7 @@ export const PaymentBrick = () => {
   if (loading)
     return (
       <>
-        <button className="w-[280px] h-[48px] rounded-lg bg-[#009ee3]  mt-[16px] flex justify-center items-center">
+        <button className="w-[280px] h-[48px] rounded-lg bg-[#009ee3]  mt-[5px] flex justify-center items-center">
           {' '}
           <LoadingIcon className="size-6 animate-spin " />
         </button>

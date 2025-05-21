@@ -26,10 +26,10 @@ export const CarritoStepTwo = () => {
           ))}
         </ul>
       </article>
-      <nav className="flex gap-2 justify-center items-start">
+      <nav className="flex gap-2 justify-center items-start pt-4">
         <Link
           to="/carrito"
-          className="flex gap-2 items-center bg-[#009ee3] px-3 py-2 w-max mt-[16px] rounded-lg font-semibold text-white"
+          className="flex gap-2 items-center bg-[#009ee3] px-3 py-2 w-max mt-[5px] rounded-lg font-semibold text-white"
         >
           <ArrowLeftIcon className="size-8" />
           Editar Carrito

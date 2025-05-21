@@ -15,6 +15,14 @@ import AuthVerify from '../components/AuthVerify'
 import UserGuard from '../components/UserGuard'
 import AdminCharts from '../pages/admin/AdminCharts'
 import TablaPedidos from '../components/PedidosReporte/TablaPedidos'
+import NonVisorGuard from '../components/PedidosReporte/NonVisorGuard'
+
+const MainLayout = () => (
+  <>
+    <Header />
+    <Outlet />
+  </>
+)
 
 const AppRoutes = () => {
   return (
@@ -27,30 +35,29 @@ const AppRoutes = () => {
             <Route path="/register" element={<Register />} />
           </Route>
 
-          {/* Rutas protegidas con layout privado */}
-          <Route
-            element={
-              
-                <>
-                  <UserGuard>
-                    
-                  <Header />
-                  <Outlet />
-                  </UserGuard>
-                </>
-            }
-          >
-            <Route path="/" element={<Landing />} />
-            <Route path="/detalle/:id" element={<Detalle />} />
-            <Route element={<AuthGuard></AuthGuard>}>
-              <Route path="/admin/charts" element={<AdminCharts />} />
-              <Route path="/admin/instrumentos" element={<AdminInstruments />} />
-              <Route path="/admin/pedidos" element={<TablaPedidos />} />
+          {/* Rutas protegidas */}
+          <Route element={<UserGuard />}>
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<Landing />} />
+              <Route path="/detalle/:id" element={<Detalle />} />
+              <Route element={<AuthGuard />}>
+                <Route path="/admin/charts" element={<AdminCharts />} />
+                <Route
+                  path="/admin/instrumentos"
+                  element={<AdminInstruments />}
+                />
+                <Route path="/admin/pedidos" element={<TablaPedidos />} />
+              </Route>
+              <Route element={<NonVisorGuard />}>
+                <Route path="/carrito" element={<Carrito />} />
+                <Route path="/carrito/step2" element={<CarritoStepTwo />} />
+                <Route
+                  path="/pago-aprobado/:id"
+                  element={<ApprovedPayment />}
+                />
+                <Route path="/pago-rechazado" element={<RejectedPayment />} />
+              </Route>
             </Route>
-            <Route path="/carrito" element={<Carrito />} />
-            <Route path="/carrito/step2" element={<CarritoStepTwo />} />
-            <Route path="/pago-aprobado/:id" element={<ApprovedPayment />} />
-            <Route path="/pago-rechazado" element={<RejectedPayment />} />
           </Route>
         </Routes>
       </main>
