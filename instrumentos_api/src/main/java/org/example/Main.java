@@ -2,7 +2,10 @@ package org.example;
 
 import org.example.entities.CategoriaInstrumento;
 import org.example.entities.Instrumento;
+import org.example.entities.Pedido;
+import org.example.entities.PedidoDetalle;
 import org.example.enums.Category;
+import org.example.enums.EstadoPedido;
 import org.example.repositories.CategoriaInstrumentoRepository;
 import org.example.repositories.InstrumentoRepository;
 import org.example.repositories.PedidoRepository;
@@ -11,6 +14,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +47,7 @@ public class Main {
                     .build();
 
             categoriaRepo.saveAll(List.of(cuerda, percusion, electronico, teclado));
-
+            
             // Crear instrumentos
             instrumentoRepo.saveAll(List.of(
                     Instrumento.builder()
@@ -166,6 +170,7 @@ public class Main {
                             .categoria(percusion)
                             .build()
             ));
+            
         };
     }
 

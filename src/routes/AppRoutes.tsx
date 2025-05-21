@@ -14,6 +14,7 @@ import Register from '../pages/Register'
 import AuthVerify from '../components/AuthVerify'
 import UserGuard from '../components/UserGuard'
 import AdminCharts from '../pages/admin/AdminCharts'
+import TablaPedidos from '../components/PedidosReporte/TablaPedidos'
 
 const AppRoutes = () => {
   return (
@@ -44,6 +45,7 @@ const AppRoutes = () => {
             <Route element={<AuthGuard></AuthGuard>}>
               <Route path="/admin/charts" element={<AdminCharts />} />
               <Route path="/admin/instrumentos" element={<AdminInstruments />} />
+              <Route path="/admin/pedidos" element={<TablaPedidos />} />
             </Route>
             <Route path="/carrito" element={<Carrito />} />
             <Route path="/carrito/step2" element={<CarritoStepTwo />} />

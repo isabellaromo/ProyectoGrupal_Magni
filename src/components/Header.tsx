@@ -69,6 +69,13 @@ const Header: React.FC = () => {
           >
             Estadísticas
           </Link>
+           <Link
+            to="/admin/pedidos"
+            className="block px-4 py-2 text-sm text-white hover:bg-gray-700"
+            onClick={() => setOpen(false)}
+          >
+            Pedidos
+          </Link>
         </div>
       )}
     </div>

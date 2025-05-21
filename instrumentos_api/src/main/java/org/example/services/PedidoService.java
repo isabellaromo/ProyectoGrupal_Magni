@@ -69,7 +69,7 @@ public class PedidoService {
     }
 
     public List<PedidoMensualDto> obtenerTotalesPorMes() {
-        return pedidoRepository.obtenerTotalesPorMes();
+        return pedidoRepository.obtenerCantidadPedidosPorMes();
     }
 
 }
